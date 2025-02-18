@@ -1,0 +1,106 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  box-sizing: border-box;
+/*   overflow: hidden; */
+}
+
+
+.login-page{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-container{
+  width: 600px;
+  height: 350px;
+  display: flex;
+  border-radius: 5px;
+  outline: 1px solid rgba(121, 44, 44, 0.76);
+}
+
+.child {
+  flex: 1;
+}
+
+.child.left{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.left .image{
+  flex-grow: 1;
+  width: 100%;
+  background: url("../../assets/earth.jpg") no-repeat center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.register-note{
+  color: white;
+  background-color: rgba(277, 277, 277, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.register-note p {
+  padding: 5px;
+  margin: 0;
+}
+
+
+.child.right{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.right div{
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+}
+
+.header{
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.right div:nth-child(2){
+  flex-grow: 1;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 8px;
+    justify-content: center;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+
+#forgot-password{
+    font-size: 12px;
+    align-self: flex-end;
+}
+
+#login-btn{
+    align-self: flex-start;
+}

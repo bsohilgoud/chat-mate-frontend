@@ -1,0 +1,24 @@
+.chat-user-card {
+    display: flex;
+    flex-direction: column;
+    outline: 1px solid pink;
+    font-size: 12px;
+    min-width: 280px;
+    padding: 5px;
+
+    .name-date-container {
+        display: flex;
+        // outline: 1px solid greenyellow;
+        justify-content: space-between;
+
+        .name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+    }
+
+    .message-container {
+        display: flex;
+        justify-content: space-between;
+    }
+}
