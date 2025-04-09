@@ -1,99 +1,48 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./ChatPage.scss";
-import Menu from "../../components/Menu/Menu";
-import { Client } from "@stomp/stompjs";
-import ChatUsers from "../../components/ChatUsers/ChatUsers";
-import { useLocation } from "react-router-dom";
+import UsersList from "../../components/features/UsersList/UsersList";
+import { fetchUsers } from "../../services/api";
+import UserChat from "../../components/features/UserChat/UserChat";
+import { connectToWS } from "../../services/websocket";
+import ChatContext from "../../context/ChatContext";
 
 function ChatPage() {
-  const [client, setClient] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [cookies, setCookies] = useState(null);
   const [usersList, setUsersList] = useState([]);
+  const { chatPartner, chatMessages, setChatMessages } =
+    useContext(ChatContext);
 
+  const receivedUserMessage = (message) => {
+    message.messageId = chatMessages.length;
+    setChatMessages((chatMessages) => [...chatMessages, message]);
+  };
 
   useEffect(() => {
-    // Retrieve userId and cookies from localStorage on component mount
-    const storedUserId = localStorage.getItem("userId");
-    // const storedCookies = localStorage.getItem("cookies");
-
-    async function fetchData() {
-
-      // You can await here
-      const res = await fetch("http://localhost:8080/users/", {
-        method: "GET",
-        credentials: "include"
-      });
-      const data = await res.json();
-      // const
-      console.log(`data : ${JSON.stringify(data)}`);
-
-      // ...
-    }
-
-    fetchData();
-
-
-    if (storedUserId) {
-      setUserId(storedUserId);
-      // setCookies(storedCookies);
-    }
+    console.log("Connection to WebSocket Server.....");
+    const userId = sessionStorage.getItem("userId");
+    connectToWS(userId, receivedUserMessage);
   }, []);
 
-  // useEffect(() => {
-  //   if (userId) {
-  //     console.log("Trying to connect to websocket server.....");
+  useEffect(() => {
+    const fetchUsersList = async () => {
+      const users = await fetchUsers();
+      setUsersList(users);
+      console.log(`userslist : ${JSON.stringify(users)}`);
+    };
 
-  //     const newClient = new Client({
-  //       brokerURL: "ws://localhost:8080/ws_server",
-  //       // connectHeaders: {
-  //       //   Cookie: cookies,
-  //       // },
-  //       reconnectDelay: 5000,
-  //       heartbeatIncoming: 4000,
-  //       heartbeatOutgoing: 4000,
-  //       onConnect: (frame) => {
-  //         console.log("Connected:", frame);
-
-  //         // Subscribe to private messages
-  //         newClient.subscribe(`/queue/private/${userId}`, (message) => {
-  //           console.log("Got private message:", message.body);
-  //         });
-
-  //         console.log("\n\n Sending Message: \n ");
-
-  //         // Send test message
-  //         newClient.publish({
-  //           destination: "/chat-mate/queue/private",
-  //           body: JSON.stringify({
-  //             senderId: userId,
-  //             receiverId: userId,
-  //             type: "MESSAGE",
-  //             content: "HI SOHIL",
-  //           }),
-  //         });
-  //       },
-  //       onStompError: (frame) => {
-  //         console.error("Broker reported error:", frame.headers["message"]);
-  //         console.error("Additional details:", frame.body);
-  //       },
-  //       onDisconnect: () => {
-  //         console.log("Disconnected from the WebSocket server");
-  //       },
-  //     });
-
-  //     setClient(newClient);
-  //     newClient.activate();
-  //   }
-  // }, [userId]);
+    fetchUsersList();
+  }, []);
 
   return (
     <>
-      <div className="chatpage">
-      {/* <div className="app-header">{"Chat Mate"}</div> */}
-        <ChatUsers userslist={usersList} />
-        <div className="user-chat">{"user-chat"}</div>
-      </div>
+      {usersList.length == 0 ? (
+        <div> Fetching Users</div>
+      ) : (
+        <div className="chatpage">
+          {/* <div className="app-header">{"Chat Mate"}</div> */}
+          <UsersList usersList={usersList} />
+          <UserChat />
+        </div>
+      )}
     </>
   );
 }

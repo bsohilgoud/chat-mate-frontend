@@ -1,8 +1,6 @@
-import React, { useState } from "react";
 import "./Login.css";
-import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// import { WebSocket } from "ws";
+import { loginUser } from "../../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,26 +9,10 @@ const Login = () => {
     console.log("login");
 
     try {
-       const loginRequest = {
-         method: "POST",
-         credentials: "include",
-         headers: {
-           "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-           username,
-           password,
-         }),
-       };
+      const response = await loginUser(username, password);
+      const responseJson = response.data;
 
-       const response = await fetch(
-         "http://localhost:8080/auth/login",
-         loginRequest
-       );
-
-      const responseJson = await response.json();
       console.log(`Login response:`, responseJson);
-
 
       /* Here since we are using browser, we dont need to get the cookie, it will be passed automatically :)
         1. In the initial login request -> the Cookie -> wiil be stored in the Application storage (JSESSIONID, e4245n...)
@@ -41,10 +23,9 @@ const Login = () => {
       // const cookies = response.headers.get("set-cookie");
       // console.log(`cookies: ${cookies}` );
 
-
-      if (response.ok) {
+      if (response.status == 200) {
         /* Try to use Context, Redux (standard) approach to share the userId state across the components */
-        localStorage.setItem("userId", responseJson.userId);
+        sessionStorage.setItem("userId", responseJson.userId);
         navigate("/chat");
       } else {
         console.error("Login failed:", responseJson);
@@ -54,12 +35,12 @@ const Login = () => {
     }
   };
 
-  function loginUser() {
+  function loginCurrentUser() {
     console.log("login");
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-    // login(username, password);
-    login("saikumar123@gmail.com", "Password@1234");
+    login(username, password);
+    // login("saikumar123@gmail.com", "Password@1234");
   }
 
   return (
@@ -90,7 +71,7 @@ const Login = () => {
                 <p id="forgot-password">
                   <a href="#"> {"Forgot password ?"}</a>
                 </p>
-                <button id="login-btn" onClick={loginUser}>
+                <button id="login-btn" onClick={loginCurrentUser}>
                   {" "}
                   {"Login"}{" "}
                 </button>

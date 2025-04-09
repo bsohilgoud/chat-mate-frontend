@@ -8,6 +8,7 @@ import {
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import ChatPage from "./pages/ChatPage/ChatPage";
+import { ChatProvider } from "./context/ChatContext";
 
 function AppRouter() {
   return (
@@ -16,7 +17,14 @@ function AppRouter() {
         <Route path="/" element={<Navigate to="/chat" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/chat" element={<ChatPage />} />
+        <Route
+          path="/chat"
+          element={
+            <ChatProvider>
+              <ChatPage />
+            </ChatProvider>
+          }
+        />
       </Routes>
     </Router>
   );

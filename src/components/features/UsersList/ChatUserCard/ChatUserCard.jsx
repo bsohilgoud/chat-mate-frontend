@@ -1,10 +1,9 @@
-import React from 'react'
-import './ChatUserCard.scss'
-const ChatUserCard = ({userMap}) => {
+import "./ChatUserCard.scss";
+const ChatUserCard = ({ userDetails, onPress }) => {
   return (
-    <div className="chat-user-card">
+    <div className="chat-user-card" onClick={onPress}>
       <div className="name-date-container">
-        <div className="name">{userMap.displayName}</div>
+        <div className="name">{userDetails.displayName}</div>
         <div className="date"> {"12/11/2025"}</div>
       </div>
       <div className="message-container">
@@ -13,6 +12,6 @@ const ChatUserCard = ({userMap}) => {
       </div>
     </div>
   );
-}
+};
 
-export default ChatUserCard
+export default ChatUserCard;

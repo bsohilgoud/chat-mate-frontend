@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stomp/stompjs": "5.4.4",
+    "axios": "^1.8.4",
     "bootstrap": "^5.0.2",
+    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.4.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.1.5",
     "sass": "^1.85.0",
-    "@stomp/stompjs": "5.4.4",
     "ws": "8.0.0"
   },
   "devDependencies": {
