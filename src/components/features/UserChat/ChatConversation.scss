@@ -1,0 +1,35 @@
+.messages-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    height: 90vh;
+    border: 0.5px solid var(--border-color);
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.date-to-messages-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.date-to-messages-container .date-divider{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.date-to-messages-container .divider-line{
+    /* height: 1px;
+    background-color: var(--accent-color);
+    flex: 1; */
+}

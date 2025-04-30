@@ -34,22 +34,22 @@ export const connectToWS = (userId, receivedUserMessage) => {
   ws_client.activate();
 };
 
-export const sendWSMessage = (receiverId, content) => {
-  console.log("Send");
-  const body = JSON.stringify({
-    senderId: user_id,
-    receiverId: receiverId,
-    type: "TEXT",
-    content: content,
-    timestamp: new Date().toISOString(),
-  });
+// export const sendWSMessage = (receiverId, content) => {
+//   console.log("Send");
+//   const body = JSON.stringify({
+//     senderId: user_id,
+//     receiverId: receiverId,
+//     type: "TEXT",
+//     content: content,
+//     timestamp: new Date().toISOString(),
+//   });
 
-  console.log(`\n\n Sending Message: \n ${body}`);
-  // Send test message
-  ws_client.publish({
-    destination: "/chat-mate/queue/private",
-    body: body,
-  });
+//   console.log(`\n\n Sending Message: \n ${body}`);
+//   // Send test message
+//   ws_client.publish({
+//     destination: "/chat-mate/queue/private",
+//     body: body,
+//   });
 
-  return JSON.parse(body);
-};
+//   return JSON.parse(body);
+// };

@@ -1,16 +1,16 @@
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import ChatPage from "./pages/ChatPage/ChatPage";
 import { ChatProvider } from "./context/ChatContext";
 
-function AppRouter() {
+const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
@@ -28,6 +28,6 @@ function AppRouter() {
       </Routes>
     </Router>
   );
-}
+};
 
 export default AppRouter;

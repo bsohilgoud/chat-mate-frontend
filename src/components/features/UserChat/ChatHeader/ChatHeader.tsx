@@ -2,7 +2,7 @@ import "./ChatHeader.scss";
 const ChatHeader = ({ chatPartner }) => {
   const shortName = chatPartner.displayName
     .split(" ")
-    .map((word) => word[0] || "")
+    .map((word: string) => word[0] || "")
     .join("");
 
   return (

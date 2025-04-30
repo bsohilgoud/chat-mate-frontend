@@ -34,15 +34,29 @@ export const loginUser = async (username, password) => {
 
 //TIP: No body for the get() request
 export const fetchUsers = async () => {
-  const response = await api.get("/users/all", {
-    withCredentials: true,
-  });
+  const response = await api.get("/users/all");
+  return response.data; // Return data directly
+};
+
+export const fetchLastConversations = async () => {
+  const response = await api.get("/messages/latest");
   return response.data; // Return data directly
 };
 
 export const fetchChatMessages = async (chatPartner) => {
-  const response = await api.get(`messages/${chatPartner.userId}`, {
-    withCredentials: true,
+  const response = await api.get(`messages/${chatPartner.userId}`);
+
+  return response.data;
+};
+
+export const saveNewPrivateMessage = async (receiverId, content) => {
+  const user_id = sessionStorage.getItem("userId");
+  const response = await api.post(`messages/new`, {
+    senderId: user_id,
+    receiverId: receiverId,
+    type: "TEXT",
+    content: content,
+    timestamp: new Date().toISOString(),
   });
 
   return response.data;

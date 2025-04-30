@@ -21,9 +21,11 @@ const ChatMessage = ({ message }) => {
     <div className={chatMessageClassName}>
       <div className="message-content">{message.content}</div>
       <div className="message-time">{formattedTime}</div>
-      <div className="message-status">
-        <MdDoneAll color="deepskyblue" size={10} />
-      </div>
+      {isMyMessage && (
+        <div className="message-status">
+          <MdDoneAll color="deepskyblue" size={10} />
+        </div>
+      )}
     </div>
   );
 };

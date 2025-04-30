@@ -11,6 +11,8 @@
     --secondary-color: #1e1e1e; /* 30% - Secondary elements (slightly lighter gray) */
     --tertiary-color: #2d2d2d; /* Additional background variation */
     --accent-color: #4e5fbf; /* 10% - Accent elements #4e5fbf */
+    --accent-color-transparent: rgba(78, 95, 191, 0.5);
+
     --highlight-color: #6b6b6b; /* For highlights/interactive elements */
 
     /* Text colors */

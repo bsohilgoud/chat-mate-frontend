@@ -1,11 +1,12 @@
+import React from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/api";
 
-const Login = () => {
+const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const login = async (username, password) => {
+  const login = async (username: string, password: string) => {
     console.log("login");
 
     try {
@@ -37,10 +38,17 @@ const Login = () => {
 
   function loginCurrentUser() {
     console.log("login");
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const usernameEl = document.getElementById(
+      "username",
+    ) as HTMLInputElement | null;
+    const passwordEl = document.getElementById(
+      "password",
+    ) as HTMLInputElement | null;
+
+    const username = usernameEl?.value || "";
+    const password = passwordEl?.value || "";
+
     login(username, password);
-    // login("saikumar123@gmail.com", "Password@1234");
   }
 
   return (

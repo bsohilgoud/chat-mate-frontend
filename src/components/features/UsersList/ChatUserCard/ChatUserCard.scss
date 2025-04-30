@@ -19,21 +19,44 @@
     .message-container {
         display: flex;
         justify-content: space-between;
+        color: var(--text-secondary);
+    }
+
+    .unread-count{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        font-size: 12px;
+        font-weight: 500;
     }
 }
 
-.chat-user-card .active{
-    background-color: var(--accent-color);
+.chat-user-card.active{
+    background-color: var(--accent-color-transparent);
     box-shadow: var(--shadow-sm) 0px 0px 4px 0px, var(--shadow-sm) 0px 2px 4px 0px;
     border: 0.5px solid var(--accent-color);
-    /* box-shadow: var(--highlight-color) 0px 3px 8px; */
+    box-shadow: var(--highlight-color) 0px 3px 8px;
     border-radius: 5px;
     /* box-shadow: var(--highlight-color) 0px 2px 4px, var(--highlight-color) 0px 7px 13px -3px, var(--highlight-color) 0px -3px 0px inset; */
 }
 
-.chat-user-card:hover{
+/* .chat-user-card.active:hover{
     background-color: var(--accent-color);
     box-shadow: var(--shadow-sm) 0px 0px 4px 0px, var(--shadow-sm) 0px 2px 4px 0px;
     border: 0.5px solid var(--accent-color);
+    box-shadow: var(--highlight-color) 0px 3px 8px;
+    border-radius: 5px;
+    /* box-shadow: var(--highlight-color) 0px 2px 4px, var(--highlight-color) 0px 7px 13px -3px, var(--highlight-color) 0px -3px 0px inset;
+} */
+
+.chat-user-card:hover{
+    background-color: var(--tertiary-color);
+    box-shadow: var(--shadow-sm) 0px 0px 4px 0px, var(--shadow-sm) 0px 2px 4px 0px;
+    /* border: 0.5px solid var(--accent-color); */
     border-radius: 5px;
 }
