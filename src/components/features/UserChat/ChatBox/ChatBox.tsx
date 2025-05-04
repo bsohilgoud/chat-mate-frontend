@@ -1,39 +1,63 @@
+import React, { useRef } from "react";
+import { useChatOperations } from "../../../../hooks/useChat";
 import "./ChatBox.css";
-import { CiFaceSmile } from "react-icons/ci";
 import { MdSend } from "react-icons/md";
-import { CiImageOn } from "react-icons/ci";
-import { FaImage } from "react-icons/fa6";
+import { FaRegFaceSmile } from "react-icons/fa6";
+import { FaRegImage } from "react-icons/fa6";
+
 import { FaSmile } from "react-icons/fa";
 import { useState } from "react";
 
-const ChatBox = ({ sendChatMessage }) => {
+const ChatBox = () => {
+  const { sendChatMessage } = useChatOperations();
   const [message, setMessage] = useState("");
+  const chatInputRef = useRef(null);
 
   const handleSend = () => {
     if (message.trim()) {
-      // Ensure the message isn't empty
       sendChatMessage(message);
-      setMessage(""); // Clear the input after sending
+      setMessage("");
+      chatInputRef.current.value = "";
+      chatInputRef.current.style.height = "0px";
+      setTimeout(() => {
+        const messagesContainer = document.querySelector("#messages-container");
+        if (messagesContainer) {
+          console.log(
+            "scroll top: " +
+              messagesContainer.scrollTop +
+              "scrollHeight: " +
+              messagesContainer.scrollHeight,
+          );
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+      }, 100);
     }
+  };
+
+  const onChange = (e) => {
+    setMessage(e.target.value);
+    document.querySelector(".icon-send").style.color =
+      e.target.value !== "" ? "var(--accent-color)" : "var(--highlight-color)";
+    e.target.style.height = e.target.scrollHeight + "px";
   };
 
   return (
     <div className="chat-box">
       <div className="icon">
-        <FaSmile />
+        <FaRegFaceSmile />
       </div>
       <div className="icon">
-        <FaImage />
+        <FaRegImage />
       </div>
-      <div className="chat-input">
-        <input
-          type="text"
-          placeholder="Type your message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </div>
-      <div className="icon">
+      <textarea
+        className="chat-input"
+        placeholder="Type your message..."
+        value={message}
+        onChange={onChange}
+        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        ref={chatInputRef}
+      />
+      <div className="icon icon-send">
         <MdSend onClick={handleSend} />
       </div>
     </div>

@@ -1,10 +1,12 @@
 import { Client } from "@stomp/stompjs";
+import { ChatMessageType } from "../context/ChatContext";
 
 let ws_client;
-let user_id;
 
-export const connectToWS = (userId, receivedUserMessage) => {
-  user_id = userId;
+export const connectToWS = (
+  userId: string,
+  receivedNewMessage: (message: ChatMessageType) => void,
+) => {
   ws_client = new Client({
     brokerURL: "ws://localhost:8080/ws_server",
     reconnectDelay: 5000,
@@ -13,11 +15,15 @@ export const connectToWS = (userId, receivedUserMessage) => {
     onConnect: (frame) => {
       console.log("Connected:", frame);
 
-      console.log("Subscribing to private messages");
       // Subscribe to private messages
-      ws_client.subscribe(`/queue/private/${user_id}`, (message) => {
-        console.log("Got private message:", message.body);
-        receivedUserMessage(JSON.parse(message.body));
+      ws_client.subscribe(`/queue/private/${userId}`, (payload) => {
+        try {
+          console.log("Got private message:", payload.body);
+          receivedNewMessage(JSON.parse(payload.body));
+          console.log("After calling receivedNewMessage");
+        } catch (e) {
+          console.error("Error in receivedNewMessage:", e);
+        }
       });
 
       console.log("Subscribed to private messages");
@@ -33,23 +39,3 @@ export const connectToWS = (userId, receivedUserMessage) => {
 
   ws_client.activate();
 };
-
-// export const sendWSMessage = (receiverId, content) => {
-//   console.log("Send");
-//   const body = JSON.stringify({
-//     senderId: user_id,
-//     receiverId: receiverId,
-//     type: "TEXT",
-//     content: content,
-//     timestamp: new Date().toISOString(),
-//   });
-
-//   console.log(`\n\n Sending Message: \n ${body}`);
-//   // Send test message
-//   ws_client.publish({
-//     destination: "/chat-mate/queue/private",
-//     body: body,
-//   });
-
-//   return JSON.parse(body);
-// };

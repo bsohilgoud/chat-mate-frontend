@@ -2,6 +2,8 @@
   width: 300px;
   display: flex;
   flex-direction: column;
+  background: var(--secondary-color);
+  height: 100vh;
 
   .chat-users-header{
     display: flex;

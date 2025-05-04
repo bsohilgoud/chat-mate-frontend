@@ -1,4 +1,4 @@
-.messages-container{
+#messages-container{
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -6,8 +6,7 @@
     overflow-y: scroll;
     height: 90vh;
     border: 0.5px solid var(--border-color);
-    padding-left: 30px;
-    padding-right: 30px;
+    padding: 10px 15%;
 }
 
 .date-to-messages-container{
@@ -19,13 +18,14 @@
     display: flex;
     gap: 10px;
     width: 100%;
+    padding-top: 10px;
     justify-content: center;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 1;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 12px;
+    margin: 12px 0px;
 }
 
 .date-to-messages-container .divider-line{

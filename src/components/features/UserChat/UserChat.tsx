@@ -1,21 +1,11 @@
-import { useContext } from "react";
+import React from "react";
 import ChatBox from "./ChatBox/ChatBox";
-import ChatContext from "../../../context/ChatContext";
+import { useChatContext } from "../../../context/ChatContext";
 import ChatHeader from "./ChatHeader/ChatHeader";
 import ChatConversation from "./ChatConversation";
-import { saveNewPrivateMessage } from "../../../services/api";
 
 function UserChat() {
-  const { chatPartner, setChatMessages } = useContext(ChatContext);
-
-  const sendChatMessage = async (newMessage) => {
-    const savedMessage = await saveNewPrivateMessage(
-      chatPartner.userId,
-      newMessage,
-    );
-    console.log(savedMessage);
-    setChatMessages((chatMessages) => [...chatMessages, savedMessage]);
-  };
+  const { chatPartner } = useChatContext();
 
   if (chatPartner === undefined || chatPartner === null) {
     return <div>Loading...</div>;
@@ -33,7 +23,7 @@ function UserChat() {
     >
       <ChatHeader chatPartner={chatPartner} />
       <ChatConversation />
-      <ChatBox sendChatMessage={sendChatMessage} />
+      <ChatBox />
     </div>
   );
 }

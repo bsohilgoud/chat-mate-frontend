@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { ChatPartner } from "../context/ChatContext";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -18,7 +19,7 @@ const api = axios.create({
 //   },
 // );
 
-export const loginUser = async (username, password) => {
+export const loginUser = async (username: string, password: string) => {
   const response = await api.post(
     "/auth/login",
     { username, password }, // for post() we need to send the body as second param
@@ -43,21 +44,53 @@ export const fetchLastConversations = async () => {
   return response.data; // Return data directly
 };
 
-export const fetchChatMessages = async (chatPartner) => {
+export const fetchChatMessages = async (chatPartner: ChatPartner) => {
   const response = await api.get(`messages/${chatPartner.userId}`);
 
   return response.data;
 };
 
-export const saveNewPrivateMessage = async (receiverId, content) => {
+export const sendNewChatMessage = async (
+  receiverId: string,
+  content: string,
+) => {
   const user_id = sessionStorage.getItem("userId");
-  const response = await api.post(`messages/new`, {
+  const message = {
     senderId: user_id,
     receiverId: receiverId,
     type: "TEXT",
     content: content,
     timestamp: new Date().toISOString(),
+  };
+  console.log("Sending message:", message);
+  const response = await api.post(`messages/new`, message);
+
+  return response.data;
+};
+
+export const updateMessageStatus = async (
+  messageId: string,
+  status: string,
+) => {
+  const response = await api.patch(`messages/status/${messageId}`, {
+    status: status,
   });
+
+  return response.data;
+};
+
+export const updateBulkMessageStatus = async (
+  partnerId: string,
+  fromStatus: string,
+  toStatus: string,
+) => {
+  const request_body = {
+    partnerId: partnerId,
+    fromStatus: fromStatus,
+    toStatus: toStatus,
+  };
+  console.log("Updating bulk message status:", request_body);
+  const response = await api.post(`messages/status/bulk`, request_body);
 
   return response.data;
 };

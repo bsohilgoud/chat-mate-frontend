@@ -1,45 +1,57 @@
+import React, { useLayoutEffect } from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import ChatContext from "../../../context/ChatContext";
+import type { ChatMessageType as ChatMessageType } from "../../../context/ChatContext";
 import ChatMessage from "./ChatMessage/ChatMessage";
 import "./ChatConversation.scss";
 import { fetchChatMessages } from "../../../services/api";
 import { formatMessageDateWithDay } from "../../../services/helper";
 
 const ChatConversation = () => {
-  const { chatPartner, chatMessages, setChatMessages } =
-    useContext(ChatContext);
+  const chatContext = useContext(ChatContext);
+  if (!chatContext) throw Error("No ChatContext");
+
+  const { chatPartner, chatMessages, setChatMessages } = chatContext;
 
   const [dateToChatMessagesMap, setDateToChatMessagesMap] = useState(new Map());
 
   const messagesContainerRef = useRef(null);
-  useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
-    }
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop =
+          messagesContainerRef.current.scrollHeight;
+      }
+    }, 100);
 
-    const dateToMessageMap = new Map();
+    const dateToMessageMap: Map<string, ChatMessageType[]> = new Map();
+
     chatMessages.forEach((message) => {
       const timestamp = formatMessageDateWithDay(message.timestamp);
-      dateToMessageMap.has(timestamp)
-        ? dateToMessageMap.get(timestamp).push(message)
-        : dateToMessageMap.set(timestamp, [message]);
+      const messages = dateToMessageMap.get(timestamp);
+      if (messages) {
+        messages.push(message);
+      } else {
+        dateToMessageMap.set(timestamp, [message]);
+      }
     });
 
     setDateToChatMessagesMap(dateToMessageMap);
-  }, [chatMessages]);
+  }, [chatMessages, setChatMessages]);
 
   useEffect(() => {
     const getChatMessages = async () => {
-      try {
-        const userChat = await fetchChatMessages(chatPartner);
-        setChatMessages(userChat);
-      } catch (error) {
-        console.error("Error fetching user chat data:", error);
+      if (chatPartner != null) {
+        try {
+          const userChat = await fetchChatMessages(chatPartner);
+          setChatMessages(userChat);
+        } catch (error) {
+          console.error("Error fetching user chat data:", error);
+        }
       }
     };
 
-    if (chatPartner != null) getChatMessages();
+    getChatMessages();
   }, [chatPartner]);
 
   if (chatMessages.length === 0) {
@@ -47,7 +59,7 @@ const ChatConversation = () => {
   }
 
   return (
-    <div className="messages-container" ref={messagesContainerRef}>
+    <div id="messages-container" ref={messagesContainerRef}>
       {Array.from(dateToChatMessagesMap.entries()).map(([date, messages]) => (
         <div key={date} className="date-to-messages-container">
           <div className="date-divider">
@@ -55,8 +67,8 @@ const ChatConversation = () => {
             <span className="date-text">{date}</span>
             <div className="divider-line"></div>
           </div>
-          {messages.map((message, index) => (
-            <ChatMessage key={index} message={message} />
+          {messages.map((message: ChatMessageType) => (
+            <ChatMessage key={message.messageId} message={message} />
           ))}
         </div>
       ))}

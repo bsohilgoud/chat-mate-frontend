@@ -1,18 +1,20 @@
+import React from "react";
 import "./ChatMessage.scss";
 import { MdDoneAll } from "react-icons/md";
+import type { ChatMessageType } from "../../../../context/ChatContext";
 
-const ChatMessage = ({ message }) => {
-  // console.log("message", JSON.stringify(message));
+type ChatMessageProps = {
+  message: ChatMessageType;
+};
+
+const ChatMessage = ({ message }: ChatMessageProps) => {
   const isMyMessage = message.senderId == sessionStorage.getItem("userId");
   const chatMessageClassName = isMyMessage
     ? "chat-message my-message"
     : "chat-message";
 
-  // Convert the LocalDateTime string to a Date object
-  const date = new Date(message.timestamp);
-
-  // Format the time as HH:mm:ss
-  const formattedTime = date.toLocaleTimeString([], {
+  const date = new Date(message.timestamp + "Z");
+  const formattedTime = date.toLocaleTimeString(navigator.language, {
     hour: "2-digit",
     minute: "2-digit",
   });

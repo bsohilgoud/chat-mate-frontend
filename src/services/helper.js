@@ -1,5 +1,5 @@
-export const formatMessageDateWithDay = (timestamp) => {
-  const messageDate = new Date(timestamp);
+export const formatMessageDateWithDay = (timestamp, isDateTime) => {
+  const messageDate = new Date(timestamp + "Z");
   const today = new Date();
 
   // Normalize to midnight for comparison
@@ -21,15 +21,25 @@ export const formatMessageDateWithDay = (timestamp) => {
   const weekday = messageDate.toLocaleDateString("en-US", { weekday: "long" });
 
   if (diffDays === 0) {
-    return `Today (${weekday})`;
+    return isDateTime
+      ? messageDate.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        })
+      : `Today`;
   } else if (diffDays === 1) {
-    return `Yesterday (${weekday})`;
+    return `Yesterday`;
+  } else if (diffDays < 5) {
+    return weekday;
   } else {
-    return `${messageDate.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    })}`;
+    return isDateTime
+      ? `${messageDate.toLocaleDateString("en-US")}`
+      : `${messageDate.toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        })}`;
     // return `${messageDate.toLocaleDateString("en-US")}`;
   }
 };

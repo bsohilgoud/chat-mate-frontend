@@ -1,26 +1,21 @@
+import React from "react";
 import { formatMessageDateWithDay } from "../../../../services/helper";
 import "./ChatUserCard.scss";
 const ChatUserCard = ({ conversation, handleSetChatPartner }) => {
   const currentUser = sessionStorage.getItem("userId");
 
-  const showUserChat = (e) => {
+  const showUserChat = (event: React.MouseEvent<HTMLDivElement>) => {
     const previousActivePartner = document.querySelector(
       ".chat-user-card.active",
     );
     if (previousActivePartner) {
       previousActivePartner.classList.remove("active");
     }
-    e.currentTarget.classList.add("active");
+    event.currentTarget.classList.add("active");
     handleSetChatPartner();
   };
 
-  const formattedTime = formatMessageDateWithDay(conversation.timestamp);
-  // const date = new Date(conversation.timestamp);
-
-  // const formattedTime = date.toLocaleTimeString([], {
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  // });
+  const formattedTime = formatMessageDateWithDay(conversation.timestamp, true);
 
   return (
     <div className="chat-user-card" onClick={showUserChat}>
@@ -31,9 +26,13 @@ const ChatUserCard = ({ conversation, handleSetChatPartner }) => {
       <div className="message-container">
         <div className="message">
           {conversation.senderId === currentUser ? "You: " : ""}
-          {conversation.content}
+          {conversation.content.length > 40
+            ? conversation.content.slice(0, 40) + "..."
+            : conversation.content}
         </div>
-        <div className="unread-count">{conversation.newMessagesCount}</div>
+        {conversation.newMessagesCount > 0 ? (
+          <div className="unread-count">{conversation.newMessagesCount}</div>
+        ) : null}
       </div>
     </div>
   );
