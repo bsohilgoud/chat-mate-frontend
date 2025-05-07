@@ -1,5 +1,8 @@
+import React from "react";
+import ProfileIcon from "../../../common/ProfileIcon/ProfileIcon";
 import "./ChatHeader.scss";
-const ChatHeader = ({ chatPartner }) => {
+import { ChatPartner } from "../../../../context/ChatContext";
+const ChatHeader = ({ chatPartner }: ChatPartner) => {
   const shortName = chatPartner.displayName
     .split(" ")
     .map((word: string) => word[0] || "")
@@ -7,7 +10,12 @@ const ChatHeader = ({ chatPartner }) => {
 
   return (
     <div className="header">
-      <div className="profile-icon">{shortName}</div>
+      <ProfileIcon
+        photoURL={chatPartner.photoURL}
+        displayName={chatPartner.displayName}
+        fontSize={24}
+        imageSize={42}
+      />
       <div className="chat-user-name">{chatPartner.displayName}</div>
     </div>
   );

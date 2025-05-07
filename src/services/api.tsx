@@ -95,4 +95,11 @@ export const updateBulkMessageStatus = async (
   return response.data;
 };
 
+export const getMediaFile = async (fileName: string) => {
+  const response = await api.get(`messages/media/${fileName}`, {
+    responseType: "blob",
+  });
+  return response.data;
+};
+
 export default api;

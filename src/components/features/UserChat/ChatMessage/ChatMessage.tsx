@@ -2,6 +2,7 @@ import React from "react";
 import "./ChatMessage.scss";
 import { MdDoneAll } from "react-icons/md";
 import type { ChatMessageType } from "../../../../context/ChatContext";
+import { MediaMessageContent } from "../../../common/MediaMessageContent/MediaMessageContent";
 
 type ChatMessageProps = {
   message: ChatMessageType;
@@ -19,13 +20,22 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
     minute: "2-digit",
   });
 
+  if (message.content == null)
+    console.log("message: " + JSON.stringify(message));
+
   return (
     <div className={chatMessageClassName}>
-      <div className="message-content">{message.content}</div>
+      <div className="message-content">
+        {message.type == "TEXT" ? (
+          message.content
+        ) : (
+          <MediaMessageContent mediaMeta={message.mediaFileDTO} />
+        )}
+      </div>
       <div className="message-time">{formattedTime}</div>
       {isMyMessage && (
         <div className="message-status">
-          <MdDoneAll color="deepskyblue" size={10} />
+          <MdDoneAll color="deepskyblue" size={16} />
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import { FaRegImage } from "react-icons/fa6";
 
 import { FaSmile } from "react-icons/fa";
 import { useState } from "react";
+import { FileUploader } from "../../../common/FileUploader/FileUploader";
 
 const ChatBox = () => {
   const { sendChatMessage } = useChatOperations();
@@ -47,7 +48,9 @@ const ChatBox = () => {
         <FaRegFaceSmile />
       </div>
       <div className="icon">
-        <FaRegImage />
+        <FileUploader>
+          <FaRegImage />
+        </FileUploader>
       </div>
       <textarea
         className="chat-input"

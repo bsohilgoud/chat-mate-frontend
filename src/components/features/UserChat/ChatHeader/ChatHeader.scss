@@ -7,7 +7,7 @@
     background: var(--secondary-color);
     align-items: center;
     /* background: linear-gradient(45deg, black, black, var(--accent-color), black); */
-
+/*
     .profile-icon{
         width: 42px;
         height: 42px;
@@ -17,10 +17,10 @@
         justify-content: center;
         align-items: center;
         font-size: 24px;
-    }
+    } */
 
     .chat-user-name{
-        font-size: 18px;
+        font-size: 1.5rem;
         margin-left: 10px;
         font-weight: bold;
         color: var(--text-secondary);

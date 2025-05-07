@@ -67,8 +67,6 @@ const Login: React.FC = () => {
             <div className="header"> {"Chat Mate"} </div>
             <div>
               <div className="login-form">
-                {/* <div className="input-block"> */}
-                {/* <FaUser className="icon icon-fa-user"/> */}
                 <input type="email" id="username" placeholder="Your email" />
                 {/* </div> */}
                 <input

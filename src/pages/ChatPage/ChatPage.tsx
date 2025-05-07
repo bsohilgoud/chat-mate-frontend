@@ -6,6 +6,7 @@ import { connectToWS } from "../../services/websocket";
 import { useNavigate } from "react-router-dom";
 import ChatUsers from "../../components/features/UsersList/ChatUsers/ChatUsers";
 import { useChatOperations } from "../../hooks/useChat";
+import Menu from "../../components/Menu/Menu";
 
 function ChatPage() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function ChatPage() {
 
   return (
     <div className="chatpage">
+      <Menu />
       {/* <div className="app-header">{"Chat Mate"}</div> */}
       <ChatUsers />
       <UserChat />

@@ -53,7 +53,12 @@
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    color: var(--tertiary-color);
+    color: var(--text-secondary);
+}
+
+.icon.icon-send > svg {
+    height: 18px;
+    width: 18px;
 }
 
 /* .chat-box .icon:hover {
