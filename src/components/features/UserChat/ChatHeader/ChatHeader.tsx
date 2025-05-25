@@ -9,7 +9,7 @@ const ChatHeader = ({ chatPartner }: ChatPartner) => {
     .join("");
 
   return (
-    <div className="header">
+    <div className="chat-header">
       <ProfileIcon
         photoURL={chatPartner.photoURL}
         displayName={chatPartner.displayName}

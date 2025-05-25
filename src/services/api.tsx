@@ -19,6 +19,24 @@ const api = axios.create({
 //   },
 // );
 
+export const registerUser = async (
+  username: string,
+  password: string,
+  displayName: string,
+) => {
+  const response = await api.post(
+    "/auth/login",
+    { username, password, displayName }, // for post() we need to send the body as second param
+    {
+      withCredentials: true, // Instead of credentials: "include" (fetch)
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  return response;
+};
+
 export const loginUser = async (username: string, password: string) => {
   const response = await api.post(
     "/auth/login",
@@ -30,6 +48,36 @@ export const loginUser = async (username: string, password: string) => {
       },
     },
   );
+  return response;
+};
+
+export const googleOauthLogin = async (credential: string) => {
+  const response = await api.post(
+    "/auth/oauth/google",
+    { googleToken: credential },
+    {
+      withCredentials: true,
+    },
+  );
+  return response;
+};
+
+export const googleSignInWithAuthCode = async (code: string) => {
+  console.log("Making googleSignInWithAuthCode request");
+  const response = await api.post(
+    "/auth/google",
+    { authCode: code },
+    {
+      withCredentials: true,
+    },
+  );
+  return response;
+};
+
+export const logoutUser = async () => {
+  const response = await api.post("/auth/logout", {
+    withCredentials: true, // Instead of credentials: "include" (fetch)
+  });
   return response;
 };
 
@@ -45,25 +93,14 @@ export const fetchLastConversations = async () => {
 };
 
 export const fetchChatMessages = async (chatPartner: ChatPartner) => {
-  const response = await api.get(`messages/${chatPartner.userId}`);
+  const response = await api.get(`/messages/${chatPartner.userId}`);
 
   return response.data;
 };
 
-export const sendNewChatMessage = async (
-  receiverId: string,
-  content: string,
-) => {
-  const user_id = sessionStorage.getItem("userId");
-  const message = {
-    senderId: user_id,
-    receiverId: receiverId,
-    type: "TEXT",
-    content: content,
-    timestamp: new Date().toISOString(),
-  };
+export const sendNewChatMessage = async (message) => {
   console.log("Sending message:", message);
-  const response = await api.post(`messages/new`, message);
+  const response = await api.post(`/messages/new`, message);
 
   return response.data;
 };
@@ -72,7 +109,7 @@ export const updateMessageStatus = async (
   messageId: string,
   status: string,
 ) => {
-  const response = await api.patch(`messages/status/${messageId}`, {
+  const response = await api.post(`/messages/status/${messageId}`, {
     status: status,
   });
 

@@ -5,18 +5,17 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
 import ChatPage from "./pages/ChatPage/ChatPage";
 import { ChatProvider } from "./context/ChatContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import Auth from "./components/Auth/Auth";
 
 const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/chat" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Auth />} />
         <Route
           path="/chat"
           element={

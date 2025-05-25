@@ -1,6 +1,9 @@
 import React from "react";
 import "./ChatMessage.scss";
 import { MdDoneAll } from "react-icons/md";
+import { MdSchedule } from "react-icons/md";
+import { IoMdAlert } from "react-icons/io";
+
 import type { ChatMessageType } from "../../../../context/ChatContext";
 import { MediaMessageContent } from "../../../common/MediaMessageContent/MediaMessageContent";
 
@@ -22,10 +25,15 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
 
   if (message.content == null)
     console.log("message: " + JSON.stringify(message));
+  if (message.type != "TEXT")
+    console.log("message: " + JSON.stringify(message));
 
   return (
     <div className={chatMessageClassName}>
       <div className="message-content">
+        {message.type == null &&
+          message.content != null &&
+          (message.type = "TEXT")}
         {message.type == "TEXT" ? (
           message.content
         ) : (
@@ -35,7 +43,15 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
       <div className="message-time">{formattedTime}</div>
       {isMyMessage && (
         <div className="message-status">
-          <MdDoneAll color="deepskyblue" size={16} />
+          {message.status == "PENDING" ? (
+            <MdSchedule color="grey" size={16} />
+          ) : message.status == "DELIVERED" ? (
+            <MdDoneAll color="grey" size={16} />
+          ) : message.status == "READ" ? (
+            <MdDoneAll color="deepskyblue" size={16} />
+          ) : (
+            <IoMdAlert color="red" size={16} />
+          )}
         </div>
       )}
     </div>

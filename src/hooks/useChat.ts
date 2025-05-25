@@ -63,14 +63,36 @@ export const useChatOperations = () => {
     (content: string) => {
       if (!chatPartner) return;
       (async () => {
-        const savedMessage = await sendNewChatMessage(
-          chatPartner.userId,
-          content,
-        );
-        console.log(savedMessage);
-        setChatMessages((prev) => [...prev, savedMessage]);
+        const user_id = sessionStorage.getItem("userId");
+        const unique_id = Date.now();
+        const newMessage = {
+          messageId: unique_id,
+          senderId: user_id,
+          receiverId: chatPartner.userId,
+          type: "TEXT",
+          content: content,
+          timestamp: new Date().toISOString(),
+        };
 
-        return savedMessage;
+        // Add pending message
+        setChatMessages((prev) => [...prev, newMessage]);
+        try {
+          const savedMessage = await sendNewChatMessage(newMessage);
+          console.log("Delivered Message: " + JSON.stringify(savedMessage));
+          // Update pending message with the delivered message.
+          setChatMessages((prevMsgs) =>
+            prevMsgs.map((msg) =>
+              msg.messageId == unique_id ? savedMessage : msg,
+            ),
+          );
+        } catch (error) {
+          // Update pending message with the error status.
+          setChatMessages((prev) =>
+            prev.map((msg) =>
+              msg.messageId === unique_id ? { ...msg, status: "FAILED" } : msg,
+            ),
+          );
+        }
       })();
     },
     [chatPartner, setChatMessages],

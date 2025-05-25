@@ -14,6 +14,8 @@ import { TbLayoutSidebarFilled } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoSettingsSharp } from "react-icons/io5";
 import "./Menu.scss";
+import { logoutUser } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const menuItems = [
   {
@@ -40,6 +42,15 @@ const menuItems = [
 
 const Menu = () => {
   const [hovered, setHovered] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    let response = await logoutUser();
+    console.log("response: " + response);
+
+    sessionStorage.removeItem("userId");
+    navigate("/login");
+  };
 
   return (
     <div className="sidebar-container">
@@ -62,7 +73,7 @@ const Menu = () => {
       </div>
       <div className="user-profile">
         <div className="icon icon-logout">
-          <IoLogOutOutline />
+          <IoLogOutOutline onClick={handleLogout} />
         </div>
       </div>
     </div>
