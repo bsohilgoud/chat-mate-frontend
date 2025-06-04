@@ -2,13 +2,15 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 /* @import url("https://fonts.cdnfonts.com/css/gilroy-bold"); */
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
 
 /* https://dribbble.com/shots/19366697-Team-Chat-App */
 * {
     /* font-family: "Inter", serif; */
     box-sizing: border-box;
     font-optical-sizing: auto;
-    font-family: "Inter", sans-serif;
+    font-family: "Manrope", sans-serif;
 }
 
 html {
@@ -119,7 +121,7 @@ p {
 }
 
 /* Light Mode Class */
-body.light-mode {
+body.light {
     /* Main color palette */
     --primary-color: #f8f9fc; /* Main background (very light gray-blue) */
     --secondary-color: #ffffff; /* Secondary elements (white) */

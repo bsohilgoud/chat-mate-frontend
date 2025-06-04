@@ -1,109 +1,61 @@
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback } from "react";
+import { useChatContext } from "../context/ChatContext";
+import { useAuthContext } from "../context/AuthContext";
 import {
-  ChatMessageType,
-  useChatContext,
-  LastConversationType,
-} from "../context/ChatContext";
-import { sendNewChatMessage, updateMessageStatus } from "../services/api";
+  getUsersAPI,
+  getMessagesSummaryAPI,
+  getPartnerDetailsAPI,
+  getChatMessagesAPI,
+} from "../services/api";
 
-export const useChatOperations = () => {
+export const useChat = () => {
+  const { user } = useAuthContext();
+
   const {
-    chatMessages,
-    setChatMessages,
+    setRecentChats,
+    setContactsList,
+    conversationList,
+    setConversationList,
+    currentMessage,
+    setCurrentMessage,
     chatPartner,
-    lastConversations,
-    setLastConversations,
+    setChatPartner,
   } = useChatContext();
 
-  // Keep the ref updated with the latest context value
-  const chatPartnerRef = useRef(chatPartner);
-  useEffect(() => {
-    chatPartnerRef.current = chatPartner;
-  }, [chatPartner]);
+  const fetchAllUsers = useCallback(async () => {
+    const api_response = await getUsersAPI();
+    const users_list = api_response.payload;
+    console.log("contacts : " + users_list);
+    setContactsList(users_list);
+  }, []);
 
-  const receivedChatMessage = useCallback(
-    (newMessage: ChatMessageType) => {
-      const chatPartner = chatPartnerRef.current;
-      console.log(
-        "Inside receivedChatMessage >> Received new message:",
-        newMessage,
-      );
-      if (!chatPartner) return;
+  const fetchRecentChats = useCallback(async () => {
+    const api_response = await getMessagesSummaryAPI();
+    const recent_chats = api_response.payload;
+    setRecentChats(recent_chats);
+  }, []);
 
-      const isMessageFromChatPartner: boolean =
-        chatPartner.userId === newMessage.senderId;
+  const getCurrentUserId = useCallback(() => {
+    return user.id;
+  }, []);
 
-      if (isMessageFromChatPartner) {
-        setChatMessages((prevMessages) => [...prevMessages, newMessage]);
-        updateMessageStatus(newMessage.messageId, "READ");
-      }
+  const fetchPartnerDetails = useCallback(async (partner_id: string) => {
+    const api_response = await getPartnerDetailsAPI(partner_id);
+    const chatPartnerDTO = api_response.payload;
+    setChatPartner(chatPartnerDTO);
+  }, []);
 
-      setLastConversations((prevConversations: LastConversationType[]) =>
-        prevConversations.map((conversation) =>
-          conversation.partnerId === newMessage.senderId
-            ? {
-                ...conversation,
-                newMessagesCount: isMessageFromChatPartner
-                  ? 0
-                  : conversation.newMessagesCount + 1,
-                content: newMessage.content,
-                senderId: newMessage.senderId,
-                receiverId: newMessage.receiverId,
-                timestamp: newMessage.timestamp,
-                status: newMessage.status,
-              }
-            : conversation,
-        ),
-      );
-    },
-    [chatPartner, setChatMessages, setLastConversations],
-  );
-
-  const sendChatMessage = useCallback(
-    (content: string) => {
-      if (!chatPartner) return;
-      (async () => {
-        const user_id = sessionStorage.getItem("userId");
-        const unique_id = Date.now();
-        const newMessage = {
-          messageId: unique_id,
-          senderId: user_id,
-          receiverId: chatPartner.userId,
-          type: "TEXT",
-          content: content,
-          timestamp: new Date().toISOString(),
-        };
-
-        // Add pending message
-        setChatMessages((prev) => [...prev, newMessage]);
-        try {
-          const savedMessage = await sendNewChatMessage(newMessage);
-          console.log("Delivered Message: " + JSON.stringify(savedMessage));
-          // Update pending message with the delivered message.
-          setChatMessages((prevMsgs) =>
-            prevMsgs.map((msg) =>
-              msg.messageId == unique_id ? savedMessage : msg,
-            ),
-          );
-        } catch (error) {
-          // Update pending message with the error status.
-          setChatMessages((prev) =>
-            prev.map((msg) =>
-              msg.messageId === unique_id ? { ...msg, status: "FAILED" } : msg,
-            ),
-          );
-        }
-      })();
-    },
-    [chatPartner, setChatMessages],
-  );
+  const fetchChatConversations = useCallback(async (partner_id: string) => {
+    const api_response = await getChatMessagesAPI(partner_id);
+    const chatConversations = api_response.payload;
+    setConversationList(chatConversations);
+  }, []);
 
   return {
-    chatMessages,
-    chatPartner,
-    lastConversations,
-    receivedChatMessage,
-    updateMessageStatus,
-    sendChatMessage,
+    fetchAllUsers,
+    fetchRecentChats,
+    fetchPartnerDetails,
+    fetchChatConversations,
+    getCurrentUserId,
   };
 };

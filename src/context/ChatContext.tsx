@@ -1,76 +1,36 @@
-import React, { ReactNode } from "react";
+import React, { useState } from "react";
+import { conversationSummary } from "../types/chatTypes";
+import { UserType } from "../types/authTypes";
 
-export type ChatMessageType = {
-  messageId: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  type: string;
-  status: string;
-  timestamp: Date;
-};
+const ChatContext = React.createContext(undefined);
 
-export type LastConversationType = {
-  senderId: string;
-  receiverId: string;
-  content: string;
-  newMessagesCount: number;
-  status: string;
-  timestamp: Date;
-  partnerId: string;
-  partnerDisplayName: string;
-};
+export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
+  const [recentChats, setRecentChats] = useState<conversationSummary[]>([]);
+  const [contactsList, setContactsList] = useState<UserType[]>([]);
+  const [conversationList, setConversationList] = React.useState([]);
+  const [currentMessage, setCurrentMessage] = React.useState<string>("");
+  const [chatPartnerId, setChatPartnerId] = React.useState();
+  const [chatPartner, setChatPartner] = React.useState();
 
-export type ChatPartner = {
-  userId: string;
-  displayName: string;
-};
-
-export type ChatProviderProps = {
-  children: ReactNode;
-};
-
-type ChatContextType = {
-  chatMessages: ChatMessageType[];
-  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
-  chatPartner: ChatPartner | null;
-  setChatPartner: React.Dispatch<React.SetStateAction<ChatPartner | null>>;
-  lastConversations: LastConversationType[];
-  setLastConversations: React.Dispatch<
-    React.SetStateAction<LastConversationType[]>
-  >;
-  ws_client: WebSocket | null;
-};
-
-const ChatContext = React.createContext<ChatContextType | undefined>(undefined);
-
-export const ChatProvider = ({ children }: ChatProviderProps) => {
-  const [chatMessages, setChatMessages] = React.useState<ChatMessageType[]>([]);
-  const [chatPartner, setChatPartner] = React.useState<ChatPartner | null>(
-    null,
-  );
-  const [lastConversations, setLastConversations] = React.useState<
-    LastConversationType[]
-  >([]);
+  const value = {
+    recentChats,
+    setRecentChats,
+    contactsList,
+    setContactsList,
+    conversationList,
+    setConversationList,
+    currentMessage,
+    setCurrentMessage,
+    chatPartnerId,
+    setChatPartnerId,
+    chatPartner,
+    setChatPartner,
+  };
 
   // Initialize WebSocket client
   const ws_client = null; // Replace with your actual WebSocket implementation
 
-  return (
-    <ChatContext.Provider
-      value={{
-        chatMessages,
-        setChatMessages,
-        chatPartner,
-        setChatPartner,
-        lastConversations,
-        setLastConversations,
-        ws_client,
-      }}
-    >
-      {children}
-    </ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };
 
 // Helper hook for consuming context

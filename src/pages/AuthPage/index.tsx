@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import "./Auth.css";
-import { useNavigate } from "react-router-dom";
+import "./index.css";
 import { SiLivechat } from "react-icons/si";
-import { InputField } from "./InputField";
-import { SocialLogin } from "./SocialLogin";
 import { useAuth } from "../../hooks/useAuth";
+import { InputField } from "../../components/Auth/InputField";
+import { SocialLogin } from "../../components/Auth/SocialLogin";
+import { AppLayout } from "../../layout/AppLayout";
 
 type FromType = "login" | "register";
 
 const Auth: React.FC = () => {
-  const navigate = useNavigate();
   const [formType, setFormType] = useState<FromType>("login");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -23,20 +22,6 @@ const Auth: React.FC = () => {
         formType === "login"
           ? await login(email, password)
           : await register(email, password, nickName);
-      const responseJson = response.data;
-
-      /* Here since we are using browser, we dont need to get the cookie, it will be passed automatically :)
-          1. In the initial login request -> the Cookie -> wiil be stored in the Application storage (JSESSIONID, e4245n...)
-          2. For every other requests it will share on include these cookies --- Yay!!! Cool
-          3. else we have to get the cookie from the headers and manually set it for each request (response.headers.get("set-cookie"))
-        */
-      if (response.status == 200) {
-        /* Try to use Context, Redux (standard) approach to share the userId state across the components */
-        sessionStorage.setItem("userId", responseJson.userId);
-        navigate("/chat");
-      } else {
-        console.error("Login failed:", responseJson);
-      }
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -47,7 +32,7 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <>
+    <AppLayout>
       <div className="auth-page">
         <div className="main-container">
           <div className="header">
@@ -124,7 +109,7 @@ const Auth: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </AppLayout>
   );
 };
 

@@ -1,6 +1,8 @@
 import axios from "axios";
 import type { ChatPartner } from "../context/ChatContext";
 
+const token = localStorage.getItem("token");
+
 const api = axios.create({
   baseURL: "http://localhost:8080",
   timeout: 5000,
@@ -10,23 +12,33 @@ const api = axios.create({
   },
 });
 
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     // Handle errors globally
-//     console.error("API error:", error.response?.data || error.message);
-//     return Promise.reject(error);
-//   },
-// );
+api.interceptors.request.use(
+  (config) => {
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
-export const registerUser = async (
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle errors globally
+    console.error("API error:", error.response?.data || error.message);
+    return Promise.reject(error);
+  },
+);
+
+export const registerAPI = async (
   username: string,
   password: string,
-  displayName: string,
+  fullName: string,
 ) => {
   const response = await api.post(
     "/auth/login",
-    { username, password, displayName }, // for post() we need to send the body as second param
+    { username, password, fullName }, // for post() we need to send the body as second param
     {
       withCredentials: true, // Instead of credentials: "include" (fetch)
       headers: {
@@ -34,10 +46,13 @@ export const registerUser = async (
       },
     },
   );
-  return response;
+  const apiResponse = response.data;
+  if (apiResponse.status == 201)
+    localStorage.setItem("token", apiResponse.payload.token);
+  return apiResponse;
 };
 
-export const loginUser = async (username: string, password: string) => {
+export const loginAPI = async (username: string, password: string) => {
   const response = await api.post(
     "/auth/login",
     { username, password }, // for post() we need to send the body as second param
@@ -48,7 +63,11 @@ export const loginUser = async (username: string, password: string) => {
       },
     },
   );
-  return response;
+  const apiResponse = response.data;
+  if (apiResponse.status == 200)
+    localStorage.setItem("token", apiResponse.payload.token);
+
+  return apiResponse;
 };
 
 export const googleOauthLogin = async (credential: string) => {
@@ -90,12 +109,6 @@ export const fetchUsers = async () => {
 export const fetchLastConversations = async () => {
   const response = await api.get("/messages/latest");
   return response.data; // Return data directly
-};
-
-export const fetchChatMessages = async (chatPartner: ChatPartner) => {
-  const response = await api.get(`/messages/${chatPartner.userId}`);
-
-  return response.data;
 };
 
 export const sendNewChatMessage = async (message) => {
@@ -140,3 +153,38 @@ export const getMediaFile = async (fileName: string) => {
 };
 
 export default api;
+
+/* ============================================================================================
+    *****************************        Users API's   **********************************
+=============================================================================================== */
+
+export const getCurrentUserAPI = async () => {
+  const response = await api.get("/users/me");
+  return response.data;
+};
+
+export const getPartnerDetailsAPI = async (partnerId: string) => {
+  const response = await api.get(`/users/${partnerId}`);
+  console.log(response.data);
+  return response.data;
+};
+
+export const getUsersAPI = async () => {
+  const response = await api.get("/users/");
+  console.log(response.data);
+  return response.data;
+};
+
+/* ============================================================================================
+    *****************************          Messages API's   **********************************
+=============================================================================================== */
+
+export const getMessagesSummaryAPI = async () => {
+  const response = await api.get("/messages/conversations/summary");
+  return response.data;
+};
+
+export const getChatMessagesAPI = async (chatPartnerId: string) => {
+  const response = await api.get(`/messages/conversations/${chatPartnerId}`);
+  return response.data;
+};

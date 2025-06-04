@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 type InputFieldProps = {
   type: string;
-  placeHolder: string;
+  placeHolder?: string;
   icon?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
