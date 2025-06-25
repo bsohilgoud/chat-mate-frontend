@@ -8,15 +8,8 @@ import { useChat } from "../../../hooks/useChat";
 import { Divider } from "../../common/Divider";
 
 const ChatConversation = () => {
-  const {
-    chatPartnerId,
-    conversationList,
-    setConversationList,
-  }: {
-    chatPartnerId: string;
-    conversationList: chatMessage[];
-    setConversationList: React.Dispatch<React.SetStateAction<chatMessage[]>>;
-  } = useChatContext();
+  const { chatPartnerId, conversationList, setConversationList } =
+    useChatContext();
 
   const { fetchChatConversations } = useChat();
 
@@ -33,7 +26,7 @@ const ChatConversation = () => {
 
     const dateToMessageMap: Map<string, chatMessage[]> = new Map();
 
-    conversationList.forEach((message) => {
+    conversationList.forEach((message: chatMessage) => {
       const timestamp = formatMessageDateWithDay(message.timestamp);
       const messages = dateToMessageMap.get(timestamp);
       if (messages) {
@@ -51,7 +44,11 @@ const ChatConversation = () => {
   }, [chatPartnerId]);
 
   if (conversationList.length === 0) {
-    return <div>No Chat Messages Found !!!</div>;
+    return (
+      <div className="messages-container flex flex-1  px-5 py-4">
+        No Chat Messages Found !!!
+      </div>
+    );
   }
 
   return (
@@ -65,11 +62,11 @@ const ChatConversation = () => {
           className="date-to-messages-container flex flex-col my-5"
         >
           <div className="relative date-divider flex w-full justify-around items-center mb-5">
-            {/* <Divider type="horizontal" className="mx-8" /> */}
+            <Divider type="horizontal" className="mx-8" />
             <span className="bg-[var(--primary-color)] date-text text-[1.35rem] min-w-fit">
               {date}
             </span>
-            {/* <Divider type="horizontal" className="mx-8" /> */}
+            <Divider type="horizontal" className="mx-8" />
           </div>
           {messages.map((message: chatMessage) => (
             <MessageBubble key={message.messageId} message={message} />

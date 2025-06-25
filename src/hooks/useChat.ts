@@ -6,12 +6,21 @@ import {
   getMessagesSummaryAPI,
   getPartnerDetailsAPI,
   getChatMessagesAPI,
+  postMessageAPI,
+  batchMessageStatusUpdateAPI,
+  updateMessageStatusAPI,
+  getMediaFile,
+  getMediaFileAPI,
 } from "../services/api";
+import { chatMessage, conversationSummary } from "../types/chatTypes";
+import { Pi } from "lucide-react";
 
 export const useChat = () => {
   const { user } = useAuthContext();
 
   const {
+    recentChats,
+    chatPartnerId,
     setRecentChats,
     setContactsList,
     conversationList,
@@ -35,10 +44,6 @@ export const useChat = () => {
     setRecentChats(recent_chats);
   }, []);
 
-  const getCurrentUserId = useCallback(() => {
-    return user.id;
-  }, []);
-
   const fetchPartnerDetails = useCallback(async (partner_id: string) => {
     const api_response = await getPartnerDetailsAPI(partner_id);
     const chatPartnerDTO = api_response.payload;
@@ -51,11 +56,87 @@ export const useChat = () => {
     setConversationList(chatConversations);
   }, []);
 
+  const fetchMediaFile = useCallback(async (media_file_name: string) => {
+    const bytes = await getMediaFileAPI(media_file_name);
+    return bytes;
+  }, []);
+
+  const sendChatMessage = useCallback(
+    async (message: string, partner_id: string) => {
+      let chatMessage: chatMessage = {
+        messageId: null,
+        senderId: user.id,
+        receiverId: partner_id,
+        content: message,
+        type: "TEXT",
+        status: "PENDING",
+        timestamp: new Date().toISOString(),
+      };
+
+      const api_response = await postMessageAPI(chatMessage);
+      chatMessage = api_response.payload;
+      reloadSummaryAndMessages(chatMessage);
+    },
+    [user],
+  );
+
+  const reloadSummaryAndMessages = useCallback(
+    (chatMessage: chatMessage) => {
+      setConversationList((chatConversations: chatMessage[]) => [
+        ...chatConversations,
+        chatMessage,
+      ]);
+
+      updateChatSummary(chatMessage);
+    },
+    [conversationList],
+  );
+
+  const updateChatSummary = useCallback(
+    (chatMessage: chatMessage) => {
+      const isMyMessage = chatMessage.senderId == user.id;
+      const partner_id = isMyMessage
+        ? chatMessage.receiverId
+        : chatMessage.senderId;
+
+      // const filteredSummary = recentChats.filter(
+      //   (summaryMessage: conversationSummary) =>
+      //     summaryMessage.partnerId === partner_id,
+      // );
+      // if (filteredSummary.length == 0) {
+      //   // 1st message from/to partner
+      //   // Fetch user details from Contacts List
+      // } else {
+      setRecentChats((recentChats: conversationSummary[]) =>
+        recentChats.map((conversation) =>
+          conversation.partnerId === partner_id
+            ? {
+                ...conversation,
+                newMessagesCount: isMyMessage
+                  ? 0
+                  : conversation.newMessagesCount + 1,
+                content: chatMessage.content,
+                senderId: chatMessage.senderId,
+                receiverId: chatMessage.receiverId,
+                timestamp: chatMessage.timestamp,
+                status: chatMessage.status,
+              }
+            : conversation,
+        ),
+      );
+      // }
+    },
+    [recentChats, setRecentChats, user],
+  );
+
   return {
     fetchAllUsers,
     fetchRecentChats,
     fetchPartnerDetails,
     fetchChatConversations,
-    getCurrentUserId,
+    sendChatMessage,
+    updateChatSummary,
+    fetchMediaFile,
+    reloadSummaryAndMessages,
   };
 };

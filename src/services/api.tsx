@@ -1,7 +1,6 @@
 import axios from "axios";
-import type { ChatPartner } from "../context/ChatContext";
-
-const token = localStorage.getItem("token");
+import { chatMessage, MessageStatusType } from "../types/chatTypes";
+import { WSNotificationType } from "../context/NotificationContext";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -14,6 +13,8 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem("token");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -55,9 +56,9 @@ export const registerAPI = async (
 export const loginAPI = async (username: string, password: string) => {
   const response = await api.post(
     "/auth/login",
-    { username, password }, // for post() we need to send the body as second param
+    { username, password },
     {
-      withCredentials: true, // Instead of credentials: "include" (fetch)
+      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
@@ -90,7 +91,9 @@ export const googleSignInWithAuthCode = async (code: string) => {
       withCredentials: true,
     },
   );
-  return response;
+  const apiResponse = response.data;
+  if (apiResponse.status == 200)
+    localStorage.setItem("token", apiResponse.payload.token);
 };
 
 export const logoutUser = async () => {
@@ -98,58 +101,6 @@ export const logoutUser = async () => {
     withCredentials: true, // Instead of credentials: "include" (fetch)
   });
   return response;
-};
-
-//TIP: No body for the get() request
-export const fetchUsers = async () => {
-  const response = await api.get("/users/all");
-  return response.data; // Return data directly
-};
-
-export const fetchLastConversations = async () => {
-  const response = await api.get("/messages/latest");
-  return response.data; // Return data directly
-};
-
-export const sendNewChatMessage = async (message) => {
-  console.log("Sending message:", message);
-  const response = await api.post(`/messages/new`, message);
-
-  return response.data;
-};
-
-export const updateMessageStatus = async (
-  messageId: string,
-  status: string,
-) => {
-  const response = await api.post(`/messages/status/${messageId}`, {
-    status: status,
-  });
-
-  return response.data;
-};
-
-export const updateBulkMessageStatus = async (
-  partnerId: string,
-  fromStatus: string,
-  toStatus: string,
-) => {
-  const request_body = {
-    partnerId: partnerId,
-    fromStatus: fromStatus,
-    toStatus: toStatus,
-  };
-  console.log("Updating bulk message status:", request_body);
-  const response = await api.post(`messages/status/bulk`, request_body);
-
-  return response.data;
-};
-
-export const getMediaFile = async (fileName: string) => {
-  const response = await api.get(`messages/media/${fileName}`, {
-    responseType: "blob",
-  });
-  return response.data;
 };
 
 export default api;
@@ -165,14 +116,22 @@ export const getCurrentUserAPI = async () => {
 
 export const getPartnerDetailsAPI = async (partnerId: string) => {
   const response = await api.get(`/users/${partnerId}`);
-  console.log(response.data);
   return response.data;
 };
 
 export const getUsersAPI = async () => {
   const response = await api.get("/users/");
-  console.log(response.data);
   return response.data;
+};
+
+export const getProfileImageAPI = async (userId: string) => {
+  const response = await api.get(`/users/profile/${userId}`, {
+    responseType: "blob",
+  });
+  if (response.status == 200) {
+    const blob = new Blob([response.data]);
+    return URL.createObjectURL(blob);
+  }
 };
 
 /* ============================================================================================
@@ -187,4 +146,54 @@ export const getMessagesSummaryAPI = async () => {
 export const getChatMessagesAPI = async (chatPartnerId: string) => {
   const response = await api.get(`/messages/conversations/${chatPartnerId}`);
   return response.data;
+};
+
+export const postMessageAPI = async (message: chatMessage) => {
+  const response = await api.post(`/messages`, message);
+  return response.data;
+};
+
+export const updateMessageStatusAPI = async (
+  messageId: number,
+  status: MessageStatusType,
+) => {
+  const response = await api.patch(`messages/status/${messageId}`, {
+    status: status,
+  });
+
+  return response.data;
+};
+
+export const batchMessageStatusUpdateAPI = async (
+  partnerId: string,
+  fromStatus: MessageStatusType,
+  toStatus: MessageStatusType,
+) => {
+  const request_body = {
+    partnerId: partnerId,
+    fromStatus: fromStatus,
+    toStatus: toStatus,
+  };
+  const response = await api.post(`messages/status/batch`, request_body);
+
+  return response.data;
+};
+
+export const getMediaFileAPI = async (mediaFileName: string) => {
+  const response = await api.get(`messages/media/${mediaFileName}`, {
+    responseType: "blob",
+  });
+  return response.data;
+};
+
+/* ============================================================================================
+    *****************************          Notifications API's   **********************************
+=============================================================================================== */
+
+export const sendNotificationAPI = (
+  toUser: string,
+  fromUser: string,
+  type: WSNotificationType,
+) => {
+  api.post("/notification", { toUser, fromUser, type });
 };

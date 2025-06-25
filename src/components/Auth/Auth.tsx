@@ -31,8 +31,6 @@ const Auth: React.FC = () => {
           3. else we have to get the cookie from the headers and manually set it for each request (response.headers.get("set-cookie"))
         */
       if (response.status == 200) {
-        /* Try to use Context, Redux (standard) approach to share the userId state across the components */
-        sessionStorage.setItem("userId", responseJson.userId);
         navigate("/chat");
       } else {
         console.error("Login failed:", responseJson);
@@ -92,6 +90,12 @@ const Auth: React.FC = () => {
               }}
             />
             <button type="submit" className="login-btn" onClick={handleAuth}>
+              <div className="flex items-center justify-center h-screen bg-white">
+                <div className="relative w-5 h-5">
+                  <div className="absolute inset-0 rounded-full border-4 border-[#7c5aff] opacity-30"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-t-[#7c5aff] border-transparent animate-spin"></div>
+                </div>
+              </div>
               {formType === "register" ? "Sign Up" : "Sign In"}
             </button>
           </form>

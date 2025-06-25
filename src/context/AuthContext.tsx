@@ -1,7 +1,31 @@
 import React from "react";
 import { UserType } from "../types/authTypes";
+import { getCurrentUserAPI } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
-const AuthContext = React.createContext({});
+type AuthContextType = {
+  user: UserType | undefined;
+  setUser: React.Dispatch<React.SetStateAction<UserType | undefined>>;
+
+  token: string | null;
+  setToken: React.Dispatch<React.SetStateAction<string | null>>;
+
+  isAuthenticated: boolean;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+
+  error: string | null;
+  setError: React.Dispatch<React.SetStateAction<string | null>>;
+
+  newAccountCreated: boolean;
+  setNewAccountCreated: React.Dispatch<React.SetStateAction<boolean>>;
+
+  navigate: ReturnType<typeof useNavigate>;
+};
+
+const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = React.useState<UserType>();
@@ -10,6 +34,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = React.useState(null);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [newAccountCreated, setNewAccountCreated] = React.useState(false);
+  const navigate = useNavigate();
 
   const value = {
     user,
@@ -24,6 +49,40 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setError,
     newAccountCreated,
     setNewAccountCreated,
+  };
+
+  React.useEffect(() => {
+    // console.log("AuthProvider useEffect triggered -> checking if this is getting called for page refresh");
+    setIsLoading(true);
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      fetchCurrentUser(storedToken);
+    } else {
+      setIsLoading(false);
+      logout();
+    }
+
+    return () => {};
+  }, []);
+
+  const fetchCurrentUser = async (token: string) => {
+    try {
+      const api_response = await getCurrentUserAPI();
+      setUser(api_response.payload);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error("Invalid token, logging out...");
+      logout();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    setIsAuthenticated(false);
+    navigate("/login");
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

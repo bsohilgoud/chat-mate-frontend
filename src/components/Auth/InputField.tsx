@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 type InputFieldProps = {
-  type: string;
+  type: "text" | "password" | "email";
   placeHolder?: string;
   icon?: string;
   value?: string;

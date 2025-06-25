@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { InputField } from "../../components/Auth/InputField";
 import { SocialLogin } from "../../components/Auth/SocialLogin";
 import { AppLayout } from "../../layout/AppLayout";
+import { useAuthContext } from "../../context/AuthContext";
 
 type FromType = "login" | "register";
 
@@ -14,6 +15,7 @@ const Auth: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [nickName, setNickName] = useState<string>("");
   const { login, register } = useAuth();
+  const { isLoading } = useAuthContext();
 
   const handleAuth = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -76,7 +78,17 @@ const Auth: React.FC = () => {
                 setPassword(e.target.value);
               }}
             />
-            <button type="submit" className="login-btn" onClick={handleAuth}>
+            <button
+              type="submit"
+              className="login-btn flex justify-center items-center gap-4"
+              onClick={handleAuth}
+            >
+              {isLoading && (
+                <div className="relative w-8 h-8">
+                  <div className="absolute inset-0 rounded-full border-4 border-white opacity-30"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-t-white border-transparent animate-spin"></div>
+                </div>
+              )}
               {formType === "register" ? "Sign Up" : "Sign In"}
             </button>
           </form>

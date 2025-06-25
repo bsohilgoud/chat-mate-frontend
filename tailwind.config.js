@@ -5,7 +5,14 @@ module.exports = {
     "./public/index.html",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        "accent-muted":
+          "linear-gradient(135deg, #6a40ff 0%, rgba(106, 64, 255, 0.3) 100%)",
+        "accent-pink": "linear-gradient(135deg, #6a40ff 0%, #ff6b9d 100%)",
+        "accent-blue": "linear-gradient(135deg, #6a40ff 0%, #4facfe 100%)",
+      },
+    },
   },
   plugins: [],
 };

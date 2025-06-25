@@ -1,43 +1,70 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useEffect } from "react";
-import { FaRegImage } from "react-icons/fa6";
 import { useChatContext } from "../../../context/ChatContext";
 import { useChat } from "../../../hooks/useChat";
-import { formatMessageDateWithDay } from "../../../services/helper";
 import { conversationSummary } from "../../../types/chatTypes";
 import { Divider } from "../../common/Divider";
-import ProfileIcon from "../../common/ProfileIcon/ProfileIcon";
 import { SearchInput } from "../../common/SearchInput";
+import ChatUserCard from "./ChatUserCard";
+import { useAuthContext } from "../../../context/AuthContext";
+import ChatUserCardSkeleton from "./ChatUserCardSkeleton";
 
-export const RecentChats = () => {
-  const { recentChats }: { recentChats: conversationSummary[] } =
-    useChatContext();
+export const RecentChats = ({ onChatSelect }) => {
+  const { recentChats, setRecentChats } = useChatContext();
   const [filteredChats, setFilteredChats] = useState<conversationSummary[]>([]);
-
   const { fetchRecentChats } = useChat();
+  const { user } = useAuthContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setFilteredChats(recentChats);
+    const filtered = recentChats.filter(
+      (obj, index, self) =>
+        index === self.findIndex((t) => t.partnerId === obj.partnerId),
+    );
+    filtered.sort((x, y) => new Date(y.timestamp) - new Date(x.timestamp));
+    setFilteredChats(filtered);
   }, [recentChats]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value.toLowerCase().trim();
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const query = e.target.value.toLowerCase().trim();
 
-    if (query === "") {
-      setFilteredChats(recentChats);
-    } else {
-      const filtered = recentChats.filter((recentChat) =>
-        recentChat.partnerFullName.toLowerCase().includes(query),
-      );
-      setFilteredChats(filtered);
-    }
-  };
+      if (query !== "") {
+        const filtered = recentChats.filter((recentChat) =>
+          recentChat.partnerFullName.toLowerCase().includes(query),
+        );
+        setFilteredChats(filtered);
+      } else {
+        const filtered = recentChats.filter(
+          (obj, index, self) =>
+            index === self.findIndex((t) => t.partnerId === obj.partnerId),
+        );
+        filtered.sort((x, y) => new Date(x.timestamp) - new Date(y.timestamp));
+        setFilteredChats(filtered);
+      }
+    },
+    [recentChats],
+  );
 
   useEffect(() => {
     if (recentChats.length == 0) {
-      fetchRecentChats();
+      setIsLoading(true);
+      setTimeout(() => {
+        fetchRecentChats().finally(() => {
+          setIsLoading(false);
+        });
+      }, 2000);
     }
   }, []);
+
+  const handleOnChatSelect = (partner_id: string) => {
+    // setRecentChats((recentChats) =>
+    //   recentChats.map((chat) =>
+    //     chat.partnerId === partner_id ? { ...chat, newMessagesCount: 0 } : chat,
+    //   ),
+    // );
+    onChatSelect(partner_id);
+  };
 
   return (
     <>
@@ -46,77 +73,32 @@ export const RecentChats = () => {
         <SearchInput onChange={handleSearchChange} />
       </div>
       <Divider type="horizontal" />
-      <div className="recent-chats flex flex-col w-full">
-        {filteredChats.map((chatSummary: conversationSummary) => (
-          <RecentChatCard
-            key={chatSummary.partnerId}
-            recentChat={chatSummary}
-          />
-        ))}
+      <div className="recent-chats flex flex-col w-full h-auto overflow-y-scroll">
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <ChatUserCardSkeleton key={i} />
+            ))
+          : filteredChats.map((chat: conversationSummary) => (
+              <ChatUserCard
+                key={chat.partnerId}
+                type="chat"
+                partnerId={chat.partnerId}
+                fullName={chat.partnerFullName}
+                profileUrl={chat.partnerProfileUrl}
+                timestamp={chat.timestamp}
+                senderId={chat.senderId}
+                content={chat.content}
+                contentType={chat.contentType}
+                newMessagesCount={chat.newMessagesCount}
+                currentUserId={user.id}
+                status={chat.status}
+                lastSeen={chat.partnerLastSeen}
+                onlineStatus={chat.partnerOnlineStatus}
+                isTyping={false}
+                onClick={() => handleOnChatSelect(chat.partnerId)}
+              />
+            ))}
       </div>
     </>
-  );
-};
-
-const RecentChatCard = ({
-  recentChat,
-}: {
-  recentChat: conversationSummary;
-}) => {
-  const user_id = sessionStorage.getItem("userId");
-  const { setChatPartnerId } = useChatContext();
-
-  const loadUserChat = (partner_id: string) => {
-    console.log("loading chatpartner --> ");
-    setChatPartnerId(partner_id);
-  };
-
-  return (
-    <div
-      className="flex items-center px-2 rounded-md hover:bg-[var(--hover-color)] cursor-pointer"
-      onClick={() => {
-        console.log("clicked user" + recentChat.partnerId);
-        loadUserChat(recentChat.partnerId);
-      }}
-    >
-      <ProfileIcon
-        photoURL={recentChat.partnerProfileUrl}
-        displayName={recentChat.partnerFullName}
-        fontSize={24}
-        imageSize={48}
-      />
-      <div className="conversation-container flex flex-col py-4 flex-1 ml-5 min-w-0 gap-2 border-b-[0.5px] border-b-[var(--border-color)]">
-        <div className="name-date-container flex items-center justify-between mb-1">
-          <div className="name font-semibold">{recentChat.partnerFullName}</div>
-          <div className="date text-[1.25rem] text-gray-500 flex-shrink-0 ml-2">
-            {formatMessageDateWithDay(recentChat.timestamp, true)}
-          </div>
-        </div>
-        <div className="message-container flex items-center justify-between">
-          <div className="message flex items-center min-w-0">
-            <p className="m-0 text-[1.25rem]">
-              {recentChat.senderId === user_id ? "You: " : ""}
-              {recentChat.contentType === "TEXT" &&
-                (recentChat.content.length > 40
-                  ? recentChat.content.slice(0, 40) + "..."
-                  : recentChat.content)}
-              {recentChat.contentType === "IMAGE" && (
-                <span className="flex items-center">
-                  <FaRegImage size={16} className="ml-1 text-gray-500" />
-                  <span className="ml-1">Photo</span>
-                </span>
-              )}
-            </p>
-          </div>
-          {recentChat.newMessagesCount > 0 && (
-            <div className="unread-count flex-shrink-0 ml-2">
-              <span className="inline-flex items-center justify-center px-2 py-1 font-bold text-white bg-[var(--accent-color)] rounded-full min-w-[20px] h-5">
-                {recentChat.newMessagesCount}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
   );
 };

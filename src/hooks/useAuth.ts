@@ -1,8 +1,12 @@
 import { useCallback } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import { getCurrentUserAPI, loginAPI, registerAPI } from "../services/api";
+import {
+  getCurrentUserAPI,
+  googleSignInWithAuthCode,
+  loginAPI,
+  registerAPI,
+} from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { useUIContext } from "../context/UIContext";
 import { useUI } from "./useUI";
 
 export const useAuth = () => {
@@ -26,15 +30,25 @@ export const useAuth = () => {
           3. else we have to get the cookie from the headers and manually set it for each request (response.headers.get("set-cookie"))
         */
       const response = await loginAPI(username, password);
-      const { token } = response.payload.token;
-      setToken(token);
-      setIsAuthenticated(true);
-      fetchCurrentUser();
-      showAlert("info", "Successful login");
+      successfulLogin(response);
       return response;
     } catch (error) {
-      console.error(error);
-      showAlert("error", "Invalid username or password!!");
+      let errorMessage = "";
+      switch (error.status) {
+        case 403:
+          errorMessage = "Invalid username or password!!";
+          break;
+        case 404:
+          errorMessage = "Username not exists!!";
+          break;
+        case 500:
+          errorMessage = "Service Unavailable!!";
+          break;
+        default:
+          errorMessage = error.message;
+          break;
+      }
+      showAlert("error", errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -45,11 +59,7 @@ export const useAuth = () => {
       setIsLoading(true);
       try {
         const response = await registerAPI(email, password, nickName);
-        const { token } = response.payload.token;
-        setToken(token);
-        setIsAuthenticated(true);
-        setNewAccountCreated(true);
-        fetchCurrentUser();
+        successfulLogin(response);
       } catch (error) {
         console.error(error);
       } finally {
@@ -58,6 +68,23 @@ export const useAuth = () => {
     },
     [],
   );
+
+  const oauthLogin = useCallback(async (provider: string, authCode: string) => {
+    setIsLoading(true);
+    try {
+      let response;
+      switch (provider) {
+        case "GOOGLE":
+          response = await googleSignInWithAuthCode(authCode);
+          break;
+      }
+      successfulLogin(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const fetchCurrentUser = useCallback(async () => {
     setIsLoading(true);
@@ -77,8 +104,18 @@ export const useAuth = () => {
     }
   }, []);
 
+  function successfulLogin(response: any) {
+    const { token } = response.payload.token;
+    setToken(token);
+    setIsAuthenticated(true);
+    setNewAccountCreated(true);
+    fetchCurrentUser();
+    showAlert("info", "Successful login");
+  }
+
   return {
     login,
     register,
+    oauthLogin,
   };
 };

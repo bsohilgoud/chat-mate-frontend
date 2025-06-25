@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import { TiWeatherSunny } from "react-icons/ti";
 
 import { RxMoon } from "react-icons/rx";
+import { useUIContext } from "../../context/UIContext";
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const { theme, setTheme } = useUIContext();
+  const [isDark, setIsDark] = useState(theme === "dark");
 
   useEffect(() => {
     if (isDark) {
       document.body.classList.remove("light");
+      setTheme("dark");
     } else {
       document.body.classList.add("light");
+      setTheme("light");
     }
   }, [isDark]);
 

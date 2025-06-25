@@ -10,27 +10,25 @@ import AuthPage from "./pages/AuthPage";
 import AuthProvider from "./context/AuthContext";
 import UIProvider from "./context/UIContext";
 import { ChatProvider } from "./context/ChatContext";
+import { NotificationProvider } from "./context/NotificationContext";
 
 const AppRouter: React.FC = () => {
   return (
-    <AuthProvider>
+    <Router>
       <UIProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Navigate to="/chat" />} />
-            <Route path="/login" element={<AuthPage />} />
-            <Route
-              path="/chat"
-              element={
-                <ChatProvider>
-                  <ChatPage />
-                </ChatProvider>
-              }
-            />
-          </Routes>
-        </Router>
+        <AuthProvider>
+          <ChatProvider>
+            <NotificationProvider>
+              <Routes>
+                <Route path="/" element={<Navigate to="/chat" />} />
+                <Route path="/login" element={<AuthPage />} />
+                <Route path="/chat/:partnerId?" element={<ChatPage />} />
+              </Routes>
+            </NotificationProvider>
+          </ChatProvider>
+        </AuthProvider>
       </UIProvider>
-    </AuthProvider>
+    </Router>
   );
 };
 

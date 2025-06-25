@@ -7,4 +7,6 @@ export interface UserType {
   profileUrl: string;
   createdAt: string;
   updatedAt: string;
+  onlineStatus: "ONLINE" | "OFFLINE";
+  lastSeen: string;
 }

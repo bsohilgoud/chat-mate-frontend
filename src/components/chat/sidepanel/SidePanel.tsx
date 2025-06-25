@@ -1,22 +1,45 @@
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { RecentChats } from "./RecentChats";
 import { Contacts } from "./Contacts";
 import { useUIContext } from "../../../context/UIContext";
+import { useNavigate } from "react-router-dom";
+import { Profile } from "./Profile";
+import { useChatContext } from "../../../context/ChatContext";
+import { batchMessageStatusUpdateAPI } from "../../../services/api";
+import { Sidebar } from "lucide-react";
 
-export const SidePanel = () => {
+const SidePanel = memo(({ className }: { className: string }) => {
   const { selectedMenu } = useUIContext();
+  const navigate = useNavigate();
+  const { setChatPartnerId } = useChatContext();
 
-  const current_menu = {
-    contacts: <Contacts />,
-    chats: <RecentChats />,
-  };
+  const loadUserChat = useCallback(
+    (partner_id: string) => {
+      batchMessageStatusUpdateAPI(partner_id, "DELIVERED", "READ");
+      setChatPartnerId(partner_id);
+      navigate(`/chat/${partner_id}`);
+    },
+    [navigate],
+  );
+
+  const current_menu = useMemo(
+    () => ({
+      contacts: <Contacts onContactSelect={loadUserChat} />,
+      chats: <RecentChats onChatSelect={loadUserChat} />,
+      settings: <Profile />,
+    }),
+    [loadUserChat],
+  );
 
   return (
     <div
-      className="side-panel overflow-y-none flex-1 h-screen min-w-[350px] bg-[var(--secondary-color)] border-r-[0.5px] border-r-[var(--border-color)] px-4 py-3
-      md:flex-none min-w-[400px]"
+      className={`${className} overflow-y-none md:flex md:max-w-[400px] flex-col max-h-full min-w-[400px] bg-[var(--secondary-color)] border-r-[0.5px] border-r-[var(--border-color)] px-4 py-3`}
     >
       {current_menu[selectedMenu]}
     </div>
   );
-};
+});
+
+SidePanel.displayName = "SidePanel";
+
+export default SidePanel;

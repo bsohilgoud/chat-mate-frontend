@@ -44,15 +44,23 @@ p {
     font-style: normal;
 }
 
+.gradient-icon {
+    filter: hue-rotate(240deg) saturate(1.5) brightness(1.2);
+}
+
 :root {
     /* Dark Mode Variables (Default) */
     /* Main color palette */
-    --font-primary: "Inter", sans-serif;
-    --font-secondary: "Inter", "Helvetica", "Arial", sans-serif;
     --primary-color: #1a1a1a; /* Main background (dark gray) */
     --secondary-color: #252525; /* Secondary elements (message area) */
     --tertiary-color: #2d2d2d; /* Additional background variation */
-    --accent-color: #6a40ff; /* Main accent purple color - logo and primary actions */
+    --accent-color: #7c5aff; /* Main accent purple color - logo and primary actions */
+    --accent-color-muted: linear-gradient(
+        135deg,
+        #6a40ff 0%,
+        rgba(106, 64, 255, 0.3) 100%
+    );
+    --bg-gradient: linear-gradient(135deg, #6a40ff, #9d7bff);
     --accent-color-hover: #7650ff; /* Slightly lighter purple for hover states */
     --accent-light: rgba(
         106,
@@ -68,56 +76,12 @@ p {
 
     /* UI element colors */
     --sidebar-bg: #1a1a1a; /* Sidebar background color */
-    --message-list-bg: #252525; /* Message list background */
-    --message-bubble-sent: #6a40ff; /* Your message bubbles (purple) */
-    --message-bubble-received: #303030; /* Received message bubbles (dark gray) */
     --panel-bg: #252525; /* Panel backgrounds */
     --search-bg: #2d2d2d; /* Search input background */
     --card-bg: #303030; /* Card/elevated elements background */
 
     /* Border styles */
     --border-color: #3d3d3d; /* Standard borders */
-    --divider-color: #3d3d3d; /* Dividers between sections */
-    --border-radius-sm: 8px; /* Small corner radius */
-    --border-radius-md: 12px; /* Medium corner radius */
-    --border-radius-lg: 16px; /* Large corner radius */
-    --border-radius-full: 50%; /* Circular elements */
-
-    /* Shadow effects */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
-
-    /* Spacing variables */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-
-    /* Interactive element colors */
-    --hover-color: #353535;
-    --active-color: #404040;
-    --inactive-color: #555555;
-    --online-indicator: #4ade80; /* Green for online status */
-    --offline-indicator: #9ca3af; /* Gray for offline status */
-    --notification-badge: #f43f5e; /* Red for notification badges */
-
-    /* Calendar colors */
-    --calendar-day-selected: #6a40ff; /* Selected day in calendar */
-    --calendar-day-current: #404040; /* Current day highlight */
-    --calendar-day-hover: #353535; /* Hover state for days */
-
-    /* Task/Timeline colors */
-    --task-complete: #4ade80; /* Green for completed tasks */
-    --task-pending: #f59e0b; /* Amber for pending tasks */
-    --task-priority: #f43f5e; /* Red for priority tasks */
-
-    /* Button colors */
-    --button-primary-bg: #6a40ff;
-    --button-primary-text: #ffffff;
-    --button-secondary-bg: #353535;
-    --button-secondary-text: #ffffff;
 }
 
 /* Light Mode Class */
@@ -126,9 +90,8 @@ body.light {
     --primary-color: #f8f9fc; /* Main background (very light gray-blue) */
     --secondary-color: #ffffff; /* Secondary elements (white) */
     --tertiary-color: #f0f2f5; /* Additional background variation */
-    --accent-color: #6a40ff; /* Main accent purple color - unchanged */
+    --accent-color: #7c5aff; /* Main accent purple color - logo and primary actions */
     --accent-color-hover: #7650ff; /* Slightly lighter purple - unchanged */
-    --accent-light: rgba(106, 64, 255, 0.1); /* Semi-transparent accent */
 
     /* Text colors */
     --text-primary: #1a1a1a; /* Main text color (almost black) */
@@ -138,8 +101,6 @@ body.light {
     /* UI element colors */
     --sidebar-bg: #ffffff; /* Sidebar background color (white) */
     --message-list-bg: #ffffff; /* Message list background (white) */
-    --message-bubble-sent: #6a40ff; /* Your message bubbles (purple) - unchanged */
-    --message-bubble-received: #f0f2f5; /* Received message bubbles (light gray) */
     --panel-bg: #ffffff; /* Panel backgrounds (white) */
     --search-bg: #f0f2f5; /* Search input background (light gray) */
     --card-bg: #ffffff; /* Card/elevated elements background (white) */
@@ -157,12 +118,6 @@ body.light {
     --hover-color: #f3f4f6;
     --active-color: #e2e8f0;
     --inactive-color: #cbd5e1;
-    /* Status indicators remain the same */
-
-    /* Calendar colors adjusted for light mode */
-    --calendar-day-selected: #6a40ff; /* Selected day in calendar (purple) */
-    --calendar-day-current: #e2e8f0; /* Current day highlight (light gray) */
-    --calendar-day-hover: #f3f4f6; /* Hover state for days (very light gray) */
 
     /* Button colors */
     --button-primary-bg: #6a40ff;
@@ -179,23 +134,6 @@ body {
     font-size: 1.6rem;
     line-height: var(--line-height-normal);
     color: var(--text-primary);
-}
-
-/* Buttons */
-.button-primary {
-    padding: 5px 10px;
-    background-color: var(--button-primary-bg);
-    color: var(--button-primary-text);
-    border-radius: var(--border-radius-md);
-    border: none;
-}
-
-.button-secondary {
-    padding: 5px 10px;
-    background-color: var(--button-secondary-bg);
-    color: var(--button-secondary-text);
-    border-radius: var(--border-radius-md);
-    border: none;
 }
 
 /* Custom Scrollbar Styling */
@@ -226,4 +164,12 @@ body {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+}
+
+.gradient-icon {
+    background: linear-gradient(135deg, #6a40ff, #9d7bff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }

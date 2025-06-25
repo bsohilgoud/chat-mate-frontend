@@ -11,6 +11,7 @@ import {
 import { CredentialResponse } from "@react-oauth/google";
 import { googleSignInWithAuthCode } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const SocialLoginBtn = styled.button`
   padding: 1rem;
@@ -51,11 +52,7 @@ type SocialLoginProps = {
 
 export const SocialLogin = ({ provider }: SocialLoginProps) => {
   const navigate = useNavigate();
-
-  const successfulSignIn = (response: { userId: string }) => {
-    sessionStorage.setItem("userId", response.userId);
-    navigate("/chat");
-  };
+  const { oauthLogin } = useAuth();
 
   const failureSignIn = (
     error: Pick<CodeResponse, "error" | "error_description" | "error_uri">,
@@ -65,9 +62,8 @@ export const SocialLogin = ({ provider }: SocialLoginProps) => {
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (codeResponse: CodeResponse) => {
-      console.log(codeResponse);
-      const response = await googleSignInWithAuthCode(codeResponse.code);
-      successfulSignIn(response.data);
+      oauthLogin("GOOGLE", codeResponse.code);
+      navigate("/chat");
     },
     onError(errorResponse) {
       failureSignIn(errorResponse);
