@@ -1,0 +1,35 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import ChatPage from "./pages/ChatPage";
+import AuthPage from "./pages/AuthPage";
+import AuthProvider from "./context/AuthContext";
+import UIProvider from "./context/UIContext";
+import { ChatProvider } from "./context/ChatContext";
+import { NotificationProvider } from "./context/NotificationContext";
+
+const AppRouter: React.FC = () => {
+  return (
+    <Router>
+      <UIProvider>
+        <AuthProvider>
+          <ChatProvider>
+            <NotificationProvider>
+              <Routes>
+                <Route path="/" element={<Navigate to="/chat" />} />
+                <Route path="/login" element={<AuthPage />} />
+                <Route path="/chat/:partnerId?" element={<ChatPage />} />
+              </Routes>
+            </NotificationProvider>
+          </ChatProvider>
+        </AuthProvider>
+      </UIProvider>
+    </Router>
+  );
+};
+
+export default AppRouter;

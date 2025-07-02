@@ -1,72 +1,139 @@
 @import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+/* @import url("https://fonts.cdnfonts.com/css/gilroy-bold"); */
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+/* https://dribbble.com/shots/19366697-Team-Chat-App */
 * {
-    font-family: "Inter", serif;
+    /* font-family: "Inter", serif; */
+    box-sizing: border-box;
+    font-optical-sizing: auto;
+    font-family: "Manrope", sans-serif;
+}
+
+html {
+    font-size: 62.5%; /* 1rem = 10px */
     box-sizing: border-box;
 }
 
+h1 {
+    font-size: 3.6rem;
+    line-height: 1.2;
+    margin-bottom: 2.4rem;
+}
+
+h2 {
+    font-size: 2.8rem;
+    line-height: 1.3;
+    margin-bottom: 1.6rem;
+}
+
+p {
+    margin-bottom: 1.6rem;
+}
+
+@font-face {
+    font-family: "Gilroy";
+    src: url("./fonts/Gilroy.eot");
+    src:
+        url("./fonts/Gilroy.eot?#iefix") format("embedded-opentype"),
+        url("./fonts/Gilroy.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.gradient-icon {
+    filter: hue-rotate(240deg) saturate(1.5) brightness(1.2);
+}
+
 :root {
-    /* Main color palette (60-30-10 rule) */
-    --primary-color: #121212; /* 60% - Main background (dark gray) */
-    --secondary-color: #1e1e1e; /* 30% - Secondary elements (slightly lighter gray) */
+    /* Dark Mode Variables (Default) */
+    /* Main color palette */
+    --primary-color: #1a1a1a; /* Main background (dark gray) */
+    --secondary-color: #252525; /* Secondary elements (message area) */
     --tertiary-color: #2d2d2d; /* Additional background variation */
-    --accent-color: #4e5fbf; /* 10% - Accent elements #4e5fbf */
-    --highlight-color: #6b6b6b; /* For highlights/interactive elements */
+    --accent-color: #7c5aff; /* Main accent purple color - logo and primary actions */
+    --accent-color-muted: linear-gradient(
+        135deg,
+        #6a40ff 0%,
+        rgba(106, 64, 255, 0.3) 100%
+    );
+    --bg-gradient: linear-gradient(135deg, #6a40ff, #9d7bff);
+    --accent-color-hover: #7650ff; /* Slightly lighter purple for hover states */
+    --accent-light: rgba(
+        106,
+        64,
+        255,
+        0.1
+    ); /* Semi-transparent accent for subtle highlights */
 
     /* Text colors */
-    --text-primary: #e0e0e0; /* Main text color (light gray) */
-    --text-secondary: #a0a0a0; /* Secondary text color (medium gray) */
+    --text-primary: #ffffff; /* Main text color (white) */
+    --text-secondary: #b0b0b0; /* Secondary text color (light gray) */
     --text-muted: #707070; /* Muted/subtle text */
 
+    /* UI element colors */
+    --sidebar-bg: #1a1a1a; /* Sidebar background color */
+    --panel-bg: #252525; /* Panel backgrounds */
+    --search-bg: #2d2d2d; /* Search input background */
+    --card-bg: #303030; /* Card/elevated elements background */
+
     /* Border styles */
-    --border-color: #2c2c2c; /* Standard borders */
-    --border-light: #3d3d3d; /* Lighter borders */
-    --border-radius: 8px; /* Standard corner radius */
-
-    /* Shadow effects */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
-
-    /* Spacing variables */
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-
-    /* Interactive element colors */
-    --hover-color: #3a3a3a;
-    --active-color: #4a4a4a;
+    --border-color: #3d3d3d; /* Standard borders */
 }
 
 /* Light Mode Class */
-body.light-mode {
-    --primary-color: #f8f8f8;
-    --secondary-color: #efefef;
-    --tertiary-color: #e0e0e0;
-    --accent-color: #bdbdbd;
-    --highlight-color: #9e9e9e;
+body.light {
+    /* Main color palette */
+    --primary-color: #f8f9fc; /* Main background (very light gray-blue) */
+    --secondary-color: #ffffff; /* Secondary elements (white) */
+    --tertiary-color: #f0f2f5; /* Additional background variation */
+    --accent-color: #7c5aff; /* Main accent purple color - logo and primary actions */
+    --accent-color-hover: #7650ff; /* Slightly lighter purple - unchanged */
 
-    --text-primary: #212121;
-    --text-secondary: #424242;
-    --text-muted: #757575;
+    /* Text colors */
+    --text-primary: #1a1a1a; /* Main text color (almost black) */
+    --text-secondary: #64748b; /* Secondary text color (slate gray) */
+    --text-muted: #94a3b8; /* Muted/subtle text */
 
-    --border-color: #d0d0d0;
-    --border-light: #e5e5e5;
+    /* UI element colors */
+    --sidebar-bg: #ffffff; /* Sidebar background color (white) */
+    --message-list-bg: #ffffff; /* Message list background (white) */
+    --panel-bg: #ffffff; /* Panel backgrounds (white) */
+    --search-bg: #f0f2f5; /* Search input background (light gray) */
+    --card-bg: #ffffff; /* Card/elevated elements background (white) */
 
+    /* Border styles */
+    --border-color: #e2e8f0; /* Standard borders (light gray) */
+    --divider-color: #e2e8f0; /* Dividers between sections */
+
+    /* Shadow effects - lighter for light mode */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.05);
 
-    --hover-color: #e8e8e8;
-    --active-color: #d5d5d5;
+    /* Interactive element colors */
+    --hover-color: #f3f4f6;
+    --active-color: #e2e8f0;
+    --inactive-color: #cbd5e1;
+
+    /* Button colors */
+    --button-primary-bg: #6a40ff;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #f0f2f5;
+    --button-secondary-text: #1a1a1a;
 }
 
 body {
     background-color: var(--primary-color);
-    color: var(--text-primary);
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: var(--font-primary);
+    font-size: 1.6rem;
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
 }
 
 /* Custom Scrollbar Styling */
@@ -92,76 +159,17 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3); /* Slightly lighter on hover */
 }
-/*
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
-
-html {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-body {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
 
 #root {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+}
+
+.gradient-icon {
+    background: linear-gradient(135deg, #6a40ff, #9d7bff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
