@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { UserType } from "../types/authTypes";
 import { getCurrentUserAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +23,7 @@ type AuthContextType = {
   setNewAccountCreated: React.Dispatch<React.SetStateAction<boolean>>;
 
   navigate: ReturnType<typeof useNavigate>;
+  resetAuthContext: () => void;
 };
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -36,20 +37,47 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [newAccountCreated, setNewAccountCreated] = React.useState(false);
   const navigate = useNavigate();
 
-  const value = {
-    user,
-    setUser,
-    token,
-    setToken,
-    isAuthenticated,
-    setIsAuthenticated,
-    isLoading,
-    setIsLoading,
-    error,
-    setError,
-    newAccountCreated,
-    setNewAccountCreated,
-  };
+  const resetAuthContext = useCallback(() => {
+    setUser(undefined);
+    setIsLoading(false);
+    setError(null);
+    setToken(null);
+    setIsAuthenticated(false);
+    setNewAccountCreated(false);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      user,
+      setUser,
+      token,
+      setToken,
+      isAuthenticated,
+      setIsAuthenticated,
+      isLoading,
+      setIsLoading,
+      error,
+      setError,
+      newAccountCreated,
+      setNewAccountCreated,
+      resetAuthContext,
+    }),
+    [
+      user,
+      setUser,
+      token,
+      setToken,
+      isAuthenticated,
+      setIsAuthenticated,
+      isLoading,
+      setIsLoading,
+      error,
+      setError,
+      newAccountCreated,
+      setNewAccountCreated,
+      resetAuthContext,
+    ],
+  );
 
   React.useEffect(() => {
     // console.log("AuthProvider useEffect triggered -> checking if this is getting called for page refresh");

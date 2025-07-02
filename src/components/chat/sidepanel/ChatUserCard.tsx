@@ -40,8 +40,8 @@ const ChatUserCard = memo((props: Props) => {
       onClick={props.onClick}
     >
       <ProfileIcon
-        photoURL={props.profileUrl}
         displayName={props.fullName}
+        photoURL={props.profileUrl}
         fontSize={24}
         imageSize={48}
         onlineStatus={props.onlineStatus}
@@ -60,29 +60,29 @@ const ChatUserCard = memo((props: Props) => {
 
         <div className="message-container flex items-center justify-between">
           <div className="message flex items-center min-w-0">
-            <p className="m-0 text-[1.25rem] truncate">
+            <div className="m-0 text-[1.25rem] truncate">
               {props.type === "chat" ? (
-                <>
+                <div className="flex gap-2">
                   {props.senderId === props.currentUserId ? "You: " : ""}
                   {props.contentType === "TEXT" ? (
-                    props.content.length > 40 ? (
-                      props.content.slice(0, 40) + "..."
+                    props.content?.length > 35 ? (
+                      props.content.slice(0, 35) + "..."
                     ) : (
                       props.content
                     )
                   ) : (
-                    <span className="flex items-center">
+                    <span className="flex gap-1">
                       <FaRegImage size={16} className="ml-1 text-gray-500" />
                       <span className="ml-1">Photo</span>
                     </span>
                   )}
-                </>
+                </div>
               ) : (
                 "Hey! I am using ChatMate"
               )}
-            </p>
+            </div>
           </div>
-          {props.type === "chat" && props.newMessagesCount > 0 && (
+          {props.type === "chat" && (
             <div className="unread-count flex-shrink-0 ml-2">
               {props.senderId === props.currentUserId ? (
                 <span className="">

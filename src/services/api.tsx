@@ -2,11 +2,14 @@ import axios from "axios";
 import { chatMessage, MessageStatusType } from "../types/chatTypes";
 import { WSNotificationType } from "../context/NotificationContext";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: BASE_URL,
   timeout: 5000,
   withCredentials: true,
   headers: {
+    "ngrok-skip-browser-warning": "69420",
     "Content-Type": "application/json",
   },
 });
@@ -38,7 +41,7 @@ export const registerAPI = async (
   fullName: string,
 ) => {
   const response = await api.post(
-    "/auth/login",
+    "/auth/register",
     { username, password, fullName }, // for post() we need to send the body as second param
     {
       withCredentials: true, // Instead of credentials: "include" (fetch)
@@ -54,6 +57,7 @@ export const registerAPI = async (
 };
 
 export const loginAPI = async (username: string, password: string) => {
+  console.log("Login started");
   const response = await api.post(
     "/auth/login",
     { username, password },
@@ -65,6 +69,8 @@ export const loginAPI = async (username: string, password: string) => {
     },
   );
   const apiResponse = response.data;
+  console.log("Login response: " + JSON.stringify(apiResponse));
+
   if (apiResponse.status == 200)
     localStorage.setItem("token", apiResponse.payload.token);
 
@@ -92,8 +98,11 @@ export const googleSignInWithAuthCode = async (code: string) => {
     },
   );
   const apiResponse = response.data;
+  console.log(`oauth apiResponse: ${JSON.stringify(apiResponse)} `);
   if (apiResponse.status == 200)
     localStorage.setItem("token", apiResponse.payload.token);
+
+  return apiResponse;
 };
 
 export const logoutUser = async () => {

@@ -1,8 +1,9 @@
 import React, { memo, useEffect, useState } from "react";
 import api from "../../../services/api";
+import { useMediaPreview } from "../../../context/MediaPreviewContext";
 
 type ProfileIconProps = {
-  photoURL: string;
+  photoURL?: string;
   displayName: string;
   fontSize?: string | number;
   imageSize?: string | number;
@@ -21,6 +22,7 @@ const ProfileIcon = memo((props: ProfileIconProps) => {
       .slice(0, 2) || "?";
 
   const [imageUrl, setImageUrl] = useState(null);
+  const { showPreview } = useMediaPreview();
 
   const getPhotoUrl = async () => {
     const response = await api.get(`/users/profile/${props.userId}`, {
@@ -34,15 +36,15 @@ const ProfileIcon = memo((props: ProfileIconProps) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      if (props.userId) {
+      if (!props.photoURL?.includes("upload")) {
+        setImageUrl(props.photoURL);
+      } else if (props.userId) {
         const url = await getPhotoUrl();
         setImageUrl(url);
-      } else if (props.photoURL) {
-        setImageUrl(props.photoURL);
       }
     };
     fetchImage();
-  }, []);
+  }, [props.photoURL]);
 
   return (
     <div

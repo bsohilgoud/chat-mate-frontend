@@ -54,14 +54,18 @@ p {
     --primary-color: #1a1a1a; /* Main background (dark gray) */
     --secondary-color: #252525; /* Secondary elements (message area) */
     --tertiary-color: #2d2d2d; /* Additional background variation */
-    --accent-color: #7c5aff; /* Main accent purple color - logo and primary actions */
+    --accent-color: #7c5cff; /* Main accent purple color - logo and primary actions */
+    --accent-color-primary-8: #f4f2ff;
+    --accent-color-primary-25: #dcd6ff;
+    --accent-color-primary-50: #b8adff;
+    --accent-color-primary-75: #9585ff;
     --accent-color-muted: linear-gradient(
         135deg,
         #6a40ff 0%,
         rgba(106, 64, 255, 0.3) 100%
     );
     --bg-gradient: linear-gradient(135deg, #6a40ff, #9d7bff);
-    --accent-color-hover: #7650ff; /* Slightly lighter purple for hover states */
+    --accent-hover-color: #7650ff; /* Slightly lighter purple for hover states */
     --accent-light: rgba(
         106,
         64,
@@ -82,6 +86,13 @@ p {
 
     /* Border styles */
     --border-color: #3d3d3d; /* Standard borders */
+
+    --gd-aurora: radial-gradient(
+        circle_at_top_left,
+        _#7c5aff_0%,
+        _#ec4899_50%,
+        _#f97316_100%
+    );
 }
 
 /* Light Mode Class */
@@ -118,12 +129,6 @@ body.light {
     --hover-color: #f3f4f6;
     --active-color: #e2e8f0;
     --inactive-color: #cbd5e1;
-
-    /* Button colors */
-    --button-primary-bg: #6a40ff;
-    --button-primary-text: #ffffff;
-    --button-secondary-bg: #f0f2f5;
-    --button-secondary-text: #1a1a1a;
 }
 
 body {
@@ -172,4 +177,14 @@ body {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }

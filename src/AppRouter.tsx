@@ -11,6 +11,7 @@ import AuthProvider from "./context/AuthContext";
 import UIProvider from "./context/UIContext";
 import { ChatProvider } from "./context/ChatContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { MediaPreviewProvider } from "./context/MediaPreviewContext";
 
 const AppRouter: React.FC = () => {
   return (
@@ -19,11 +20,13 @@ const AppRouter: React.FC = () => {
         <AuthProvider>
           <ChatProvider>
             <NotificationProvider>
-              <Routes>
-                <Route path="/" element={<Navigate to="/chat" />} />
-                <Route path="/login" element={<AuthPage />} />
-                <Route path="/chat/:partnerId?" element={<ChatPage />} />
-              </Routes>
+              <MediaPreviewProvider>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/chat" />} />
+                  <Route path="/login" element={<AuthPage />} />
+                  <Route path="/chat/:partnerId?" element={<ChatPage />} />
+                </Routes>
+              </MediaPreviewProvider>
             </NotificationProvider>
           </ChatProvider>
         </AuthProvider>

@@ -42,14 +42,21 @@ const menuItems = [
 
 const Menu = memo(({ className = "" }: { className?: string }) => {
   const navigate = useNavigate();
-  const { unReadMessagesCount, setUnReadMessagesCount, recentChats } =
-    useChatContext();
-  const { selectedMenu, setSelectedMenu } = useUIContext();
-  const { user, isLoading } = useAuthContext();
+  const {
+    unReadMessagesCount,
+    setUnReadMessagesCount,
+    recentChats,
+    resetChatContext,
+  } = useChatContext();
+  const { selectedMenu, setSelectedMenu, resetUIContext } = useUIContext();
+  const { user, isLoading, resetAuthContext } = useAuthContext();
 
   const handleLogout = useCallback(async () => {
     await logoutUser();
     sessionStorage.removeItem("userId");
+    resetAuthContext();
+    resetChatContext();
+    resetUIContext();
     navigate("/login");
   }, [navigate]);
 
@@ -68,9 +75,6 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
   }, [recentChats]);
 
   useEffect(() => {
-    console.log(
-      `useEffect unReadMessagesCount : ${unReadMessagesCount}, calculatedUnreadCount: ${calculatedUnreadCount} `,
-    );
     if (unReadMessagesCount !== calculatedUnreadCount) {
       setUnReadMessagesCount(calculatedUnreadCount);
     }
@@ -115,10 +119,10 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
         ))}
       </div>
       <div className="flex justify-center items-center mr-4 md:flex-col">
-        <div className="mb-4">
+        <div className="mb-4 hidden md:block">
           <ThemeToggle />
         </div>
-        <Divider className="md:hidden" type="vertical" />
+        <Divider className="flex md:hidden" type="vertical" />
         <ProfileIcon
           photoURL={user.profileUrl}
           displayName={user.fullName}
@@ -127,7 +131,7 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
           userId={user.id}
         />
         <div
-          className="icon icon-logout pb-5 hover:cursor-pointer justfiy-center items-center hidden text-[var(--text-muted)] hover:text-[var(--accent-color)] md:flex md:flex-col"
+          className="icon icon-logout pb-5 hover:cursor-pointer justfiy-center items-center hidden text-[var(--text-muted)] hover:text-red-400 md:flex md:flex-col"
           onClick={handleLogout}
         >
           <Divider className="hidden md:block" type="horizontal" />

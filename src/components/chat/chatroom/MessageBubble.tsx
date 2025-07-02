@@ -8,10 +8,12 @@ import { useMediaStore } from "../../../hooks/useMediaStore";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 import { formatBytes } from "../../../services/helper";
+import { useMediaPreview } from "../../../context/MediaPreviewContext";
 
 const MessageBubble = ({ message }: { message: chatMessage }) => {
   const { user } = useAuthContext();
   const { loadMediaBlob } = useMediaStore();
+  const { showPreview } = useMediaPreview();
 
   const isOwnMessage = message.senderId == user?.id;
   const date = new Date(message.timestamp + "Z");
@@ -36,6 +38,13 @@ const MessageBubble = ({ message }: { message: chatMessage }) => {
       console.warn("Error for message: " + JSON.stringify(message));
     }
   };
+
+  // const handleDownload = (downloadUrl) => {
+  //   const link = document.createElement("a");
+  //   link.href = downloadUrl;
+  //   link.download = "image.jpg";
+  //   link.click();
+  // };
 
   const renderMedia = (mediaDTO) => {
     const mediaClasses = "rounded-lg max-w-full";
@@ -66,8 +75,18 @@ const MessageBubble = ({ message }: { message: chatMessage }) => {
           <div className="">
             <img
               src={mediaUrl}
-              className={`${mediaClasses} max-h-80 w-auto object-cover cursor-pointer hover:opacity-95 transition-opacity`}
+              className="
+                rounded-lg
+                object-cover
+                cursor-pointer
+                hover:opacity-95
+                transition-opacity
+                w-full
+                max-w-[70vw] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[500px]
+                max-h-[40vh] sm:max-h-[300px] md:max-h-[350px] lg:max-h-[400px]
+              "
               loading="lazy"
+              onClick={() => showPreview(mediaUrl!)}
             />
           </div>
         );

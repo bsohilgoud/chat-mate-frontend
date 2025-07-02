@@ -35,7 +35,7 @@ export const Contacts = ({
         setFilteredUsers(filtered);
       }
     },
-    [],
+    [contactsList],
   );
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export const Contacts = ({
         fetchAllUsers().finally(() => {
           setIsLoading(false);
         });
-      }, 10000); // 10 second delay for testing
+      }, 200); // 0.2 second delay for testing
 
       // fetchAllUsers().finally(() => {
       //   setIsLoading(false);
@@ -55,13 +55,13 @@ export const Contacts = ({
   }, []);
 
   return (
-    <>
+    <div className="h-full max-h-screen flex flex-col overflow-y-none">
       <div className="sp-header-container w-full flex flex-col py-3 gap-3">
         <div className="sp-header-text text-5xl"> Contacts </div>
         <SearchInput onChange={handleSearchChange} />
       </div>
       <Divider type="horizontal" />
-      <div className="contacts overflow-y-scroll h-full flex flex-col w-full mb-4">
+      <div className="contacts flex-1 flex flex-col w-full overflow-y-auto">
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
               <ChatUserCardSkeleton key={index} />
@@ -81,7 +81,8 @@ export const Contacts = ({
                 }}
               />
             ))}
+        <div className="min-h-[100px]"></div>
       </div>
-    </>
+    </div>
   );
 };

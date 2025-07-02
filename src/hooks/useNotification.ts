@@ -4,7 +4,6 @@ import { useChatContext } from "../context/ChatContext";
 import { chatMessage, MessageStatusType } from "../types/chatTypes";
 import { useChat } from "./useChat";
 import { sendNotificationAPI, updateMessageStatusAPI } from "../services/api";
-import { UserType } from "../types/authTypes";
 
 export const useNotification = () => {
   const { user } = useAuthContext();

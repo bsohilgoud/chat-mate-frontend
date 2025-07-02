@@ -6,39 +6,23 @@ import { IoVideocamOutline } from "react-icons/io5";
 import { IoCallOutline } from "react-icons/io5";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { UserType } from "../../../types/authTypes";
 
-const ChatHeader = ({ onBack }: { onBack: () => void }) => {
-  const {
-    chatPartnerId,
-    chatPartner,
-  }: { chatPartnerId: string; chatPartner: UserType } = useChatContext();
+const ChatHeader = () => {
+  const { chatPartner } = useChatContext();
   const navigate = useNavigate();
-
-  const { fetchPartnerDetails } = useChat();
-
-  useEffect(() => {
-    if (chatPartnerId != null) {
-      fetchPartnerDetails(chatPartnerId);
-    }
-  }, [chatPartnerId]);
-
-  // useEffect(() => {
-  //   console.log("Chat Partner status changed: " + JSON.stringify(chatPartner));
-  // }, [chatPartner]);
 
   if (chatPartner == null) return <div> {"loading"} </div>;
 
-  // const handleBack = () => {
-  //   navigate("/chat");
-  // };
-
   return (
     <div className="chat-header border-b-[0.5px] border-b-[var(--border-color)] flex items-center px-4 gap-3 w-full h-[75px] bg-[var(--secondary-color)]">
-      <FaArrowLeft className="mr-5 md:hidden" size={24} onClick={onBack} />
+      <FaArrowLeft
+        className="mr-5 md:hidden"
+        size={24}
+        onClick={() => navigate("/chat")}
+      />
       <ProfileIcon
-        photoURL={chatPartner.profileUrl}
         displayName={chatPartner.fullName}
+        // photoURL={chatPartner.profileUrl}
         fontSize={24}
         imageSize={42}
         onlineStatus={chatPartner.onlineStatus}

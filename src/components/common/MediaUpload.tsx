@@ -23,8 +23,8 @@ import { CircularProgress } from "./CircularProgress";
 import api from "../../services/api";
 import { AxiosProgressEvent } from "axios";
 import { useAuthContext } from "../../context/AuthContext";
-import { useChatContext } from "../../context/ChatContext";
 import { useChat } from "../../hooks/useChat";
+import { useParams } from "react-router-dom";
 
 const modalStyles = {
   overlay: {
@@ -78,7 +78,7 @@ export const MediaUpload = ({
   const { reloadSummaryAndMessages } = useChat();
 
   const { user } = useAuthContext();
-  const { chatPartnerId } = useChatContext();
+  const { partnerId } = useParams();
 
   const handleIconClick = () => {
     fileInputRef.current?.click();
@@ -98,13 +98,6 @@ export const MediaUpload = ({
     if (selectedFiles.length > 0) {
       setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
       setShowModal(true);
-      // setUploadProgress((prev) => {
-      //   const updates: UploadProgress = {};
-      //   selectedFiles.forEach((file, index) => {
-      //     updates[`${file.name}-${index}`] = 0;
-      //   });
-      //   return { ...prev, ...updates };
-      // });
       event.target.value = "";
     }
   };
@@ -122,7 +115,7 @@ export const MediaUpload = ({
       const formData = new FormData();
       formData.append("senderId", user?.id);
       formData.append("content", "");
-      formData.append("receiverId", chatPartnerId);
+      formData.append("receiverId", partnerId);
       formData.append("file", file);
       formData.append("type", getFileTypeByMime(file));
       formData.append("status", "DELIVERED");

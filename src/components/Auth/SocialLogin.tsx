@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const SocialLoginBtn = styled.button`
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 1rem;
   border: 0.5px solid var(--accent-color);
   outline: none;
@@ -27,13 +27,13 @@ const SocialLoginBtn = styled.button`
   color: var(--accent-color);
   font-size: 1.5rem;
   font-weight: 400;
-  background-color: var(--button-secondary-bg);
+  background-color: var(--border-color);
   color: var(--button-secondary-text);
-  border-radius: var(--border-radius-md);
+  border-radius: 5px;
   border: none;
 
   &:hover {
-    background: var(--accent-color-hover);
+    background: linear-gradient(135deg, #1e1b4b 0%, #7c5aff 50%, #c7d2fe 100%);
     color: white;
   }
 
@@ -63,7 +63,6 @@ export const SocialLogin = ({ provider }: SocialLoginProps) => {
   const googleLogin = useGoogleLogin({
     onSuccess: async (codeResponse: CodeResponse) => {
       oauthLogin("GOOGLE", codeResponse.code);
-      navigate("/chat");
     },
     onError(errorResponse) {
       failureSignIn(errorResponse);

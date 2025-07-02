@@ -1,7 +1,6 @@
-import React, { SetStateAction, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { chatMessage, conversationSummary } from "../types/chatTypes";
 import { UserType } from "../types/authTypes";
-import { Dispatch } from "@reduxjs/toolkit";
 
 type ChatContextType = {
   recentChats: conversationSummary[];
@@ -20,6 +19,7 @@ type ChatContextType = {
   setUnReadMessagesCount: React.Dispatch<React.SetStateAction<number>>;
   showChatPartnerIsTyping: boolean;
   setShowChatPartnerIsTyping: React.Dispatch<React.SetStateAction<boolean>>;
+  resetChatContext: () => void;
 };
 
 const ChatContext = React.createContext<ChatContextType | undefined>(undefined);
@@ -37,24 +37,57 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [showChatPartnerIsTyping, setShowChatPartnerIsTyping] =
     useState<boolean>(false);
 
-  const value = {
-    recentChats,
-    setRecentChats,
-    contactsList,
-    setContactsList,
-    conversationList,
-    setConversationList,
-    currentMessage,
-    setCurrentMessage,
-    chatPartnerId,
-    setChatPartnerId,
-    chatPartner,
-    setChatPartner,
-    unReadMessagesCount,
-    setUnReadMessagesCount,
-    showChatPartnerIsTyping,
-    setShowChatPartnerIsTyping,
-  };
+  const resetChatContext = useCallback(() => {
+    setRecentChats([]);
+    setContactsList([]);
+    setConversationList([]);
+    setCurrentMessage("");
+    setChatPartnerId(undefined);
+    setChatPartner(undefined);
+    setUnReadMessagesCount(0);
+    setShowChatPartnerIsTyping(false);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      recentChats,
+      setRecentChats,
+      contactsList,
+      setContactsList,
+      conversationList,
+      setConversationList,
+      currentMessage,
+      setCurrentMessage,
+      chatPartnerId,
+      setChatPartnerId,
+      chatPartner,
+      setChatPartner,
+      unReadMessagesCount,
+      setUnReadMessagesCount,
+      showChatPartnerIsTyping,
+      setShowChatPartnerIsTyping,
+      resetChatContext,
+    }),
+    [
+      recentChats,
+      setRecentChats,
+      contactsList,
+      setContactsList,
+      conversationList,
+      setConversationList,
+      currentMessage,
+      setCurrentMessage,
+      chatPartnerId,
+      setChatPartnerId,
+      chatPartner,
+      setChatPartner,
+      unReadMessagesCount,
+      setUnReadMessagesCount,
+      showChatPartnerIsTyping,
+      setShowChatPartnerIsTyping,
+      resetChatContext,
+    ],
+  );
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

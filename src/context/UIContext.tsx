@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { menuType, themeType } from "../types/uiTypes";
 
 type alertType = "error" | "warn" | "info";
@@ -36,6 +36,7 @@ type UIContextType = {
 
   showLoadingScreen: boolean;
   setShowLoadingScreen: React.Dispatch<React.SetStateAction<boolean>>;
+  resetUIContext: () => void;
 };
 
 const UIContext = React.createContext<UIContextType | undefined>(undefined);
@@ -52,34 +53,67 @@ const UIProvider = ({ children }: { children: React.ReactNode }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("");
-  const [theme, setTheme] = useState<themeType>("dark");
+  const [theme, setTheme] = useState<themeType>(
+    localStorage.getItem("theme") || "light",
+  );
   const [showChatRoom, setShowChatRoom] = useState<boolean>(false);
   const [showLoadingScreen, setShowLoadingScreen] = useState<boolean>(false);
 
-  const value = {
-    selectedMenu,
-    setSelectedMenu,
-    showNotification,
-    setShowNotification,
-    notificationMessage,
-    setNotificationMessage,
-    notificationType,
-    setNotificationType,
-    currentPage,
-    setCurrentPage,
-    showAlert,
-    setShowAlert,
-    alertMessage,
-    setAlertMessage,
-    alertType,
-    setAlertType,
-    theme,
-    setTheme,
-    showChatRoom,
-    setShowChatRoom,
-    showLoadingScreen,
-    setShowLoadingScreen,
-  };
+  const resetUIContext = useCallback(() => {
+    setSelectedMenu("chats");
+    setShowNotification(false);
+    setNotificationMessage("");
+    setNotificationType("info");
+    setCurrentPage("chat");
+    setShowAlert(false);
+    setAlertMessage("");
+    setAlertType("");
+    setTheme(localStorage.getItem("theme") || "light");
+    setShowChatRoom(false);
+    setShowLoadingScreen(false);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      selectedMenu,
+      setSelectedMenu,
+      showNotification,
+      setShowNotification,
+      notificationMessage,
+      setNotificationMessage,
+      notificationType,
+      setNotificationType,
+      currentPage,
+      setCurrentPage,
+      showAlert,
+      setShowAlert,
+      alertMessage,
+      setAlertMessage,
+      alertType,
+      setAlertType,
+      theme,
+      setTheme,
+      showChatRoom,
+      setShowChatRoom,
+      showLoadingScreen,
+      setShowLoadingScreen,
+      resetUIContext, // ✅ Add this line
+    }),
+    [
+      selectedMenu,
+      showNotification,
+      notificationMessage,
+      notificationType,
+      currentPage,
+      showAlert,
+      alertMessage,
+      alertType,
+      theme,
+      showChatRoom,
+      showLoadingScreen,
+      resetUIContext,
+    ],
+  );
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
 };
