@@ -33,7 +33,7 @@ const SidePanel = memo(({ className }: { className: string }) => {
 
   return (
     <div
-      className={`${className} overflow-y-none md:flex md:max-w-[400px] flex-col max-h-full min-w-[400px] bg-[var(--secondary-color)] border-r-[0.5px] border-r-[var(--border-color)] px-4 py-3`}
+      className={`${className} overflow-y-none overflow-x-hidden md:flex md:max-w-[400px] flex-col h-full md:min-w-[400px] bg-[var(--secondary-color)] border-r-[0.5px] border-r-[var(--border-color)] px-4 py-3`}
     >
       {current_menu[selectedMenu]}
     </div>

@@ -1,17 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ChatHeader from "./ChatHeader";
 import { useChatContext } from "../../../context/ChatContext";
 import { SiLivechat } from "react-icons/si";
 import ChatConversation from "./ChatConversation";
 import ChatBox from "./ChatBox";
+import { useParams } from "react-router-dom";
+import { useChat } from "../../../hooks/useChat";
 
-function ChatRoom({
-  className,
-  onBack,
-}: {
-  className: string;
-  onBack: () => void;
-}) {
+function ChatRoom({ className }: { className: string }) {
   const bounceKeyframes = `
   @keyframes bounce {
     0%   { transform: translateY(0px); }
@@ -20,12 +16,23 @@ function ChatRoom({
   }
   `;
 
-  const { chatPartnerId } = useChatContext();
+  const { partnerId } = useParams<{ partnerId?: string }>();
+  const { fetchPartnerDetails } = useChat();
+  const { setChatPartnerId } = useChatContext();
 
-  if (chatPartnerId == null) {
+  useEffect(() => {
+    if (partnerId != null) {
+      setChatPartnerId(partnerId);
+      fetchPartnerDetails(partnerId);
+    } else {
+      setChatPartnerId(undefined);
+    }
+  }, [partnerId]);
+
+  if (partnerId == null) {
     return (
       <div
-        className={`${className} md:flex flex-col h-screen flex-1 p-4 gap-3 justify-center items-center`}
+        className={`${className} md:flex flex-col h-full flex-1 p-4 gap-3 justify-center items-center overflow-y-none`}
       >
         <style>{bounceKeyframes}</style>
         <div
@@ -36,10 +43,13 @@ function ChatRoom({
         >
           <SiLivechat size={36} color="var(--text-muted)" />
         </div>
-        <span className="flex items-center justify-center text-[2.5rem] text-center">
+        <span
+          className="flex items-center justify-center font-bold text-[2.5rem] text-center bg-[linear-gradient(135deg,_#7c5aff_0%,_#3b82f6_100%)]
+          bg-clip-text text-transparent"
+        >
           Welcome to ChatMate!!
         </span>
-        <span className="flex items-center justify-center text-[1.5rem] text-center">
+        <span className="flex items-center justify-center text-[1.5rem] text-center bg-[linear-gradient(135deg,_#7c5aff_0%,_#f59e0b_100%)] bg-clip-text text-transparent">
           {"Select a conversation from the sidebar to start chatting "}
         </span>
       </div>
@@ -47,8 +57,10 @@ function ChatRoom({
   }
 
   return (
-    <div className={`${className} md:flex user-chat flex-col h-screen flex-1`}>
-      <ChatHeader onBack={onBack} />
+    <div
+      className={`${className} md:flex user-chat flex-col h-full flex-1 overflow-hidden`}
+    >
+      <ChatHeader />
       <ChatConversation />
       <ChatBox />
     </div>

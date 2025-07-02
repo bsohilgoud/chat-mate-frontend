@@ -56,7 +56,7 @@ export const NotificationProvider = ({
   } = useNotification();
   const [notifications, setNotifications] = useState<notificationAlert[]>([]);
 
-  const addNotification = (notification) => {
+  const addNotification = (notification: notificationAlert) => {
     const id = Date.now() + Math.random();
     setNotifications((prev) => [...prev, { ...notification, id }]);
   };
@@ -70,7 +70,7 @@ export const NotificationProvider = ({
   const publicNotification = (public_notification: WSNotification) => {
     const payload = public_notification.body;
     const fromUser = public_notification.fromUser;
-    if (user?.id === fromUser.id) return;
+    if (user.id === fromUser.id) return;
 
     switch (public_notification.type) {
       case "USER_OFFLINE":
@@ -125,10 +125,25 @@ export const NotificationProvider = ({
     }
   }, [user]);
 
+  const getWebSocketURL = () => {
+    const envURL = import.meta.env.VITE_API_BASE_URL;
+
+    if (envURL) {
+      const url = new URL(envURL);
+      const wsProtocol = url.protocol === "https:" ? "wss:" : "ws:";
+      return `${wsProtocol}//${url.host}/ws_server`;
+    }
+
+    return "ws://localhost:8080/ws_server";
+  };
+
   const setWSConnection = () => {
     console.log("Connecting to websocket server....");
+    const wsURL = getWebSocketURL();
+    console.log("WebSocket URL:", wsURL);
+
     ws_client = new Client({
-      brokerURL: "ws://localhost:8080/ws_server",
+      brokerURL: wsURL,
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,

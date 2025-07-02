@@ -30,9 +30,12 @@ export const useAuth = () => {
           3. else we have to get the cookie from the headers and manually set it for each request (response.headers.get("set-cookie"))
         */
       const response = await loginAPI(username, password);
+      setNewAccountCreated(false);
       successfulLogin(response);
       return response;
     } catch (error) {
+      console.log(error.status);
+      console.log(error);
       let errorMessage = "";
       switch (error.status) {
         case 403:
@@ -55,13 +58,23 @@ export const useAuth = () => {
   }, []);
 
   const register = useCallback(
-    async (email: string, password: string, nickName: string) => {
+    async (email: string, password: string, fullName: string) => {
       setIsLoading(true);
       try {
-        const response = await registerAPI(email, password, nickName);
+        const response = await registerAPI(email, password, fullName);
+        setNewAccountCreated(true);
         successfulLogin(response);
+        return response;
       } catch (error) {
+        let errorMessage = "";
+        console.error("Error Status " + error.status);
         console.error(error);
+        switch (error.status) {
+          case 409:
+            errorMessage = "Username already exists!!";
+            break;
+        }
+        showAlert(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -78,6 +91,7 @@ export const useAuth = () => {
           response = await googleSignInWithAuthCode(authCode);
           break;
       }
+      setNewAccountCreated(response.payload?.newUser == true);
       successfulLogin(response);
     } catch (error) {
       console.error(error);
@@ -92,7 +106,7 @@ export const useAuth = () => {
       const api_response = await getCurrentUserAPI();
       if (api_response.status == 200) {
         const userDTO = api_response.payload;
-        console.log("logged in userDTO: " + userDTO);
+        console.log("logged in userDTO: " + JSON.stringify(userDTO));
         setUser(userDTO);
         sessionStorage.setItem("userId", userDTO.id);
         navigate("/chat");
@@ -108,7 +122,6 @@ export const useAuth = () => {
     const { token } = response.payload.token;
     setToken(token);
     setIsAuthenticated(true);
-    setNewAccountCreated(true);
     fetchCurrentUser();
     showAlert("info", "Successful login");
   }

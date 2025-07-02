@@ -94,7 +94,8 @@ export const NotificationAlert = () => {
 
   return (
     <div>
-      <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 max-h-screen overflow-y-auto">
+      {/* <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 max-h-screen overflow-y-auto"> */}
+      <div className="fixed top-6 right-0 transform -translate-x-2 z-50 max-h-screen overflow-y-auto">
         <div className="flex flex-col items-center">
           {notifications.map((notification) => (
             <NotificationItem

@@ -7,7 +7,7 @@ export interface DividerProps {
   type?: DividerType;
   withContent?: string;
   contentClassName?: string;
-  bgColor?: string; // For custom background color
+  bgColor?: string;
 }
 
 export const Divider: React.FC<DividerProps> = ({
