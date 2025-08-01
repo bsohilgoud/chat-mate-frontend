@@ -138,9 +138,26 @@ export const getProfileImageAPI = async (userId: string) => {
     responseType: "blob",
   });
   if (response.status == 200) {
-    const blob = new Blob([response.data]);
-    return URL.createObjectURL(blob);
+    return response.data;
   }
+};
+
+export const uploadProfileImageAPI = async (userId: string, file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await api.post(`/users/profile/${userId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  if (response.status == 200) {
+    return response.data;
+  }
+};
+
+export const deleteProfileImageAPI = async (userId: string) => {
+  const response = await api.delete(`/users/profile/${userId}`);
+  return response.data;
 };
 
 /* ============================================================================================

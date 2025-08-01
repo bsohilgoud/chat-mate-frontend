@@ -2,7 +2,11 @@ import React, { useCallback, useRef, useState } from "react";
 import { Divider } from "../../common/Divider";
 import ProfileIcon from "../../common/ProfileIcon/ProfileIcon";
 import { useAuthContext } from "../../../context/AuthContext";
-import api, { logoutUser } from "../../../services/api";
+import api, {
+  logoutUser,
+  uploadProfileImageAPI,
+  deleteProfileImageAPI,
+} from "../../../services/api";
 import { CiMail } from "react-icons/ci";
 import { formatMessageDateWithDay } from "../../../services/helper";
 import { Pencil } from "lucide-react";
@@ -11,6 +15,8 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useChatContext } from "../../../context/ChatContext";
 import { useUIContext } from "../../../context/UIContext";
+import { useMediaStore } from "../../../hooks/useMediaStore";
+
 export const Profile = () => {
   const { user, setUser } = useAuthContext();
   const { resetAuthContext } = useAuthContext();
@@ -19,13 +25,19 @@ export const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageVersion, setImageVersion] = useState(0);
   const navigate = useNavigate();
+  const { deleteMediaBlob } = useMediaStore();
 
   const handleEditProfile = () => {
     fileInputRef.current?.click();
   };
 
-  const handleDeleteProfile = () => {
-    // fileInputRef.current?.click();
+  const handleDeleteProfile = async () => {
+    const response = await deleteProfileImageAPI(user.id);
+    if (response.status === 200) {
+      await deleteMediaBlob(`profile_${user.id}`);
+      setUser((user) => (user ? { ...user, profileUrl: null } : user)); // Learn about this
+      setImageVersion((v) => v + 1);
+    }
   };
 
   const handleLogout = useCallback(async () => {
@@ -47,19 +59,14 @@ export const Profile = () => {
     }
   };
 
-  const uploadProfile = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await api.post(`/users/profile/${user.id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+  const uploadProfile = async (file: File) => {
+    const response = await uploadProfileImageAPI(user.id, file);
 
     if (response.status == 200) {
-      console.log(response.data.payload.profileUrl);
-      const profileUrl = response.data.payload.profileUrl;
+      console.log(response.payload.profileUrl);
+      const profileUrl = response.payload.profileUrl;
+
+      deleteMediaBlob(`profile_${user.id}`);
       setUser((user) => (user ? { ...user, profileUrl: profileUrl } : user)); // Learn about this
       setImageVersion((v) => v + 1);
     }
@@ -80,7 +87,7 @@ export const Profile = () => {
             key={imageVersion}
           />
           <div
-            className="absolute flex justify-center items-center bg-[var(--secondary-color)] p-3 rounded-full cursor-pointer hover:bg-grey-400 right-2 bottom-5 border-[0.5px]  border-[var(--border-color)]"
+            className="absolute flex justify-center items-center bg-[var(--secondary-color)] p-3 rounded-full cursor-pointer hover:bg-grey-400 right-2 bottom-5 border-[0.5px] border-[var(--border-color)] hover:border-blue-400 hover:text-blue-400"
             onClick={handleEditProfile}
           >
             <Pencil size={16} />
@@ -92,7 +99,7 @@ export const Profile = () => {
             />
           </div>
           <div
-            className="absolute flex justify-center items-center bg-[var(--secondary-color)] p-3 rounded-full cursor-pointer hover:bg-grey-400 left-2 bottom-5 border-[0.5px]  border-[var(--border-color)]"
+            className="absolute flex justify-center items-center bg-[var(--secondary-color)] p-3 rounded-full cursor-pointer hover:bg-grey-400 left-2 bottom-5 border-[0.5px] border-[var(--border-color)] hover:border-red-400 hover:text-red-400"
             onClick={handleDeleteProfile}
           >
             <FaRegTrashCan size={16} />

@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
-import api from "../../../services/api";
 import { useMediaPreview } from "../../../context/MediaPreviewContext";
+import { useMediaStore } from "../../../hooks/useMediaStore";
 
 type ProfileIconProps = {
   photoURL?: string;
@@ -10,6 +10,7 @@ type ProfileIconProps = {
   onlineStatus?: "ONLINE" | "OFFLINE";
   className?: string;
   userId?: string;
+  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
 const ProfileIcon = memo((props: ProfileIconProps) => {
@@ -23,23 +24,14 @@ const ProfileIcon = memo((props: ProfileIconProps) => {
 
   const [imageUrl, setImageUrl] = useState(null);
   const { showPreview } = useMediaPreview();
-
-  const getPhotoUrl = async () => {
-    const response = await api.get(`/users/profile/${props.userId}`, {
-      responseType: "blob",
-    });
-    if (response.status == 200) {
-      const blob = new Blob([response.data]);
-      return URL.createObjectURL(blob);
-    }
-  };
+  const { loadProfileImageBlob } = useMediaStore();
 
   useEffect(() => {
     const fetchImage = async () => {
       if (!props.photoURL?.includes("upload")) {
         setImageUrl(props.photoURL);
       } else if (props.userId) {
-        const url = await getPhotoUrl();
+        const url = await loadProfileImageBlob(props.userId);
         setImageUrl(url);
       }
     };
@@ -56,6 +48,7 @@ const ProfileIcon = memo((props: ProfileIconProps) => {
         backgroundColor: "var(--tertiary-color)",
         border: "0.3px solid var(--border-color)",
       }}
+      onClick={props.onClick}
     >
       {imageUrl ? (
         <img

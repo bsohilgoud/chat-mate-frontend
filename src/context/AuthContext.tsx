@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { UserType } from "../types/authTypes";
 import { getCurrentUserAPI } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { useMediaStore } from "../hooks/useMediaStore";
 
 type AuthContextType = {
   user: UserType | undefined;
@@ -36,6 +37,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [newAccountCreated, setNewAccountCreated] = React.useState(false);
   const navigate = useNavigate();
+  const { clearProfileImageBlobs } = useMediaStore();
 
   const resetAuthContext = useCallback(() => {
     setUser(undefined);
@@ -82,6 +84,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     // console.log("AuthProvider useEffect triggered -> checking if this is getting called for page refresh");
     setIsLoading(true);
+    clearProfileImageBlobs();
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       fetchCurrentUser(storedToken);

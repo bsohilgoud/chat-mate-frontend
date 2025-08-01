@@ -19,6 +19,8 @@ type ChatContextType = {
   setUnReadMessagesCount: React.Dispatch<React.SetStateAction<number>>;
   showChatPartnerIsTyping: boolean;
   setShowChatPartnerIsTyping: React.Dispatch<React.SetStateAction<boolean>>;
+  showChatPartnerInfo: boolean;
+  setShowChatPartnerInfo: React.Dispatch<React.SetStateAction<boolean>>;
   resetChatContext: () => void;
 };
 
@@ -36,6 +38,8 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [unReadMessagesCount, setUnReadMessagesCount] = useState<number>();
   const [showChatPartnerIsTyping, setShowChatPartnerIsTyping] =
     useState<boolean>(false);
+  const [showChatPartnerInfo, setShowChatPartnerInfo] =
+    useState<boolean>(false);
 
   const resetChatContext = useCallback(() => {
     setRecentChats([]);
@@ -46,6 +50,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     setChatPartner(undefined);
     setUnReadMessagesCount(0);
     setShowChatPartnerIsTyping(false);
+    setShowChatPartnerInfo(false);
   }, []);
 
   const value = useMemo(
@@ -66,6 +71,8 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       setUnReadMessagesCount,
       showChatPartnerIsTyping,
       setShowChatPartnerIsTyping,
+      showChatPartnerInfo,
+      setShowChatPartnerInfo,
       resetChatContext,
     }),
     [

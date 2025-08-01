@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import { useChatContext } from "../../../context/ChatContext";
 import { SiLivechat } from "react-icons/si";
 import ChatConversation from "./ChatConversation";
 import ChatBox from "./ChatBox";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useChat } from "../../../hooks/useChat";
+import { ChatPartnerProfile } from "./ChatPartnerProfile";
 
 function ChatRoom({ className }: { className: string }) {
   const bounceKeyframes = `
@@ -19,6 +20,8 @@ function ChatRoom({ className }: { className: string }) {
   const { partnerId } = useParams<{ partnerId?: string }>();
   const { fetchPartnerDetails } = useChat();
   const { setChatPartnerId } = useChatContext();
+  const { chatPartner } = useChatContext();
+  const [showUserProfile, setShowUserProfile] = useState<boolean>(false);
 
   useEffect(() => {
     if (partnerId != null) {
@@ -28,6 +31,16 @@ function ChatRoom({ className }: { className: string }) {
       setChatPartnerId(undefined);
     }
   }, [partnerId]);
+
+  const location = useLocation();
+
+  // Detect navigation changes and hide profile
+  useEffect(() => {
+    if (showUserProfile) {
+      setShowUserProfile(false); // Hide profile on URL/path change
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   if (partnerId == null) {
     return (
@@ -58,11 +71,19 @@ function ChatRoom({ className }: { className: string }) {
 
   return (
     <div
-      className={`${className} md:flex user-chat flex-col h-full flex-1 overflow-hidden`}
+      className={`${className} relative md:flex user-chat flex-col h-full flex-1 overflow-hidden`}
     >
-      <ChatHeader />
+      <ChatHeader
+        chatPartner={chatPartner}
+        setShowUserProfile={setShowUserProfile}
+      />
       <ChatConversation />
       <ChatBox />
+      <ChatPartnerProfile
+        chatPartner={chatPartner}
+        showProfile={showUserProfile}
+        setShowUserProfile={setShowUserProfile}
+      />
     </div>
   );
 }

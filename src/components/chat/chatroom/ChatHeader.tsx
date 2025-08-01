@@ -1,14 +1,18 @@
-import React, { useEffect } from "react";
-import { useChatContext } from "../../../context/ChatContext";
+import React from "react";
 import ProfileIcon from "../../common/ProfileIcon/ProfileIcon";
-import { useChat } from "../../../hooks/useChat";
 import { IoVideocamOutline } from "react-icons/io5";
 import { IoCallOutline } from "react-icons/io5";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { UserType } from "../../../types/authTypes";
 
-const ChatHeader = () => {
-  const { chatPartner } = useChatContext();
+const ChatHeader = ({
+  chatPartner,
+  setShowUserProfile,
+}: {
+  chatPartner: UserType;
+  setShowUserProfile: (show: boolean) => void;
+}) => {
   const navigate = useNavigate();
 
   if (chatPartner == null) return <div> {"loading"} </div>;
@@ -22,11 +26,12 @@ const ChatHeader = () => {
       />
       <ProfileIcon
         displayName={chatPartner.fullName}
-        // photoURL={chatPartner.profileUrl}
+        photoURL={chatPartner.profileUrl}
         fontSize={24}
         imageSize={42}
         onlineStatus={chatPartner.onlineStatus}
         userId={chatPartner.id}
+        onClick={() => setShowUserProfile(true)}
       />
       <div className="ml-2 name-and-status-container flex flex-col flex-1 gap-2">
         <span className="name text-[1.75rem] font-bold">
