@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { menuType, themeType } from "../types/uiTypes";
 
 type alertType = "error" | "warn" | "info";
@@ -114,6 +114,16 @@ const UIProvider = ({ children }: { children: React.ReactNode }) => {
       resetUIContext,
     ],
   );
+
+  useEffect(() => {
+    if (theme == "dark") {
+      document.body.classList.remove("light");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.body.classList.add("light");
+      localStorage.setItem("theme", "light");
+    }
+  }, [theme]);
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
 };

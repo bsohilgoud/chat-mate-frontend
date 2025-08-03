@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import { useChatContext } from "../../../context/ChatContext";
 import { useUIContext } from "../../../context/UIContext";
 import { useMediaStore } from "../../../hooks/useMediaStore";
+import { IoIosCamera } from "react-icons/io";
+import { FaCamera } from "react-icons/fa";
 
 export const Profile = () => {
   const { user, setUser } = useAuthContext();
@@ -77,7 +79,7 @@ export const Profile = () => {
       <div className="sp-header-text text-5xl"> My Profile </div>
 
       <div className="flex flex-col items-center mt-10 justify-center gap-3">
-        <div className="relative profileImage flex flex-col items-center justify-center p-2 border-[0.5px] border-dashed border-[var(--border-color)] rounded-full ">
+        <div className="relative profileImage flex flex-col hover:cursor-pointer items-center justify-center p-2 border-[0.5px] border-dashed border-[var(--border-color)] rounded-full ">
           <ProfileIcon
             displayName={user?.fullName}
             fontSize={50}
@@ -90,7 +92,7 @@ export const Profile = () => {
             className="absolute flex justify-center items-center bg-[var(--secondary-color)] p-3 rounded-full cursor-pointer hover:bg-grey-400 right-2 bottom-5 border-[0.5px] border-[var(--border-color)] hover:border-blue-400 hover:text-blue-400"
             onClick={handleEditProfile}
           >
-            <Pencil size={16} />
+            <FaCamera size={16} />
             <input
               type="file"
               className="hidden"

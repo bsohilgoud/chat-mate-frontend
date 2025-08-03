@@ -109,7 +109,7 @@ export const useAuth = () => {
         console.log("logged in userDTO: " + JSON.stringify(userDTO));
         setUser(userDTO);
         sessionStorage.setItem("userId", userDTO.id);
-        navigate("/chat");
+        navigate("/chats");
       }
     } catch (error) {
       console.error(error);

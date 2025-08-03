@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import SidePanel from "../../components/chat/sidepanel/SidePanel";
 import WelcomeOnboardingModal from "../../components/common/WelcomeOnboardingModal";
-import { useAuth } from "../../hooks/useAuth";
 import { useAuthContext } from "../../context/AuthContext";
 
 function ChatPage() {

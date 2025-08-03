@@ -1,7 +1,11 @@
 import { useCallback, useRef } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useChatContext } from "../context/ChatContext";
-import { chatMessage, MessageStatusType } from "../types/chatTypes";
+import {
+  chatMessage,
+  conversationSummary,
+  MessageStatusType,
+} from "../types/chatTypes";
 import { useChat } from "./useChat";
 import { sendNotificationAPI, updateMessageStatusAPI } from "../services/api";
 
@@ -92,6 +96,20 @@ export const useNotification = () => {
         setShowChatPartnerIsTyping(false);
       }, 5000);
     }
+
+    setRecentChats((prevRecentChats: conversationSummary[]) =>
+      prevRecentChats.map((chat) =>
+        chat.partnerId === fromUser ? { ...chat, isTyping: true } : chat,
+      ),
+    );
+
+    // setTimeout(() => {
+    //   setRecentChats((prevRecentChats: conversationSummary[]) =>
+    //     prevRecentChats.map((chat) =>
+    //       chat.partnerId === fromUser ? { ...chat, isTyping: false } : chat,
+    //     ),
+    //   );
+    // }, 5000);
   }, []);
 
   const updateStatusForUser = useCallback(

@@ -22,7 +22,7 @@ const ChatHeader = ({
       <FaArrowLeft
         className="mr-5 md:hidden"
         size={24}
-        onClick={() => navigate("/chat")}
+        onClick={() => navigate("/chats")}
       />
       <ProfileIcon
         displayName={chatPartner.fullName}

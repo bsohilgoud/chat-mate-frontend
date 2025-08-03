@@ -48,7 +48,7 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
     recentChats,
     resetChatContext,
   } = useChatContext();
-  const { selectedMenu, setSelectedMenu, resetUIContext } = useUIContext();
+  const { resetUIContext } = useUIContext();
   const { user, isLoading, resetAuthContext } = useAuthContext();
 
   const handleLogout = useCallback(async () => {
@@ -62,10 +62,14 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
 
   const handleMenuClick = useCallback(
     (itemKey: menuType) => {
-      setSelectedMenu(itemKey);
+      navigate(`/${itemKey}`);
     },
-    [setSelectedMenu],
+    [navigate],
   );
+
+  const isActive = (path: string) => {
+    return location.pathname.startsWith(`/${path}`);
+  };
 
   const calculatedUnreadCount = useMemo(() => {
     return recentChats.reduce(
@@ -99,14 +103,14 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
           <div key={item.key}>
             <div
               className={`relative flex flex-col justify-center items-center gap-1 cursor-pointer transition-colors duration-200 ${
-                selectedMenu === item.key
+                isActive(item.key)
                   ? "text-[var(--accent-color)] hover:text-[var(--accent-color)]"
                   : "text-[var(--text-muted)] hover:text-[var(--accent-color)]"
               }`}
               onClick={() => handleMenuClick(item.key)}
             >
               <div className="relative">
-                {selectedMenu === item.key ? item.sharp : item.outline}
+                {isActive(item.key) ? item.sharp : item.outline}
                 {item.key === "chats" && (
                   <span className="unread-messages absolute top-[-5px] right-[-7px] flex items-center font-bold justify-center rounded-full text-white text-[1rem] px-3 w-7 h-7 bg-red-500">
                     {unReadMessagesCount}
@@ -129,6 +133,7 @@ const Menu = memo(({ className = "" }: { className?: string }) => {
           fontSize={18}
           imageSize={42}
           userId={user.id}
+          onClick={() => navigate("/profile")}
         />
         <div
           className="icon icon-logout pb-5 hover:cursor-pointer justfiy-center items-center hidden text-[var(--text-muted)] hover:text-red-400 md:flex md:flex-col"

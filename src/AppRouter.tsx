@@ -22,9 +22,12 @@ const AppRouter: React.FC = () => {
             <NotificationProvider>
               <MediaPreviewProvider>
                 <Routes>
-                  <Route path="/" element={<Navigate to="/chat" />} />
+                  <Route path="/" element={<Navigate to="/chats" />} />
                   <Route path="/login" element={<AuthPage />} />
-                  <Route path="/chat/:partnerId?" element={<ChatPage />} />
+                  <Route path="/chats/:partnerId?" element={<ChatPage />} />
+                  <Route path="/contacts/" element={<ChatPage />} />
+                  <Route path="/settings/" element={<ChatPage />} />
+                  <Route path="/profile/" element={<ChatPage />} />
                 </Routes>
               </MediaPreviewProvider>
             </NotificationProvider>

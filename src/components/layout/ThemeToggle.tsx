@@ -11,13 +11,12 @@ export default function ThemeToggle() {
   useEffect(() => {
     console.log("ThemeToggle useEffect isDark:", isDark);
     if (isDark) {
-      document.body.classList.remove("light");
-      localStorage.setItem("theme", "dark");
+      // document.body.classList.remove("light");
+      // localStorage.setItem("theme", "dark");
       setTheme("dark");
     } else {
-      console.log("Setting light theme");
-      document.body.classList.add("light");
-      localStorage.setItem("theme", "light");
+      // document.body.classList.add("light");
+      // localStorage.setItem("theme", "light");
       setTheme("light");
     }
   }, [isDark]);

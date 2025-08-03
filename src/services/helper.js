@@ -1,5 +1,5 @@
 export const formatMessageDateWithDay = (timestamp, isDateTime) => {
-  const messageDate = new Date(timestamp + "Z");
+  const messageDate = new Date(timestamp);
   const today = new Date();
 
   // Normalize to midnight for comparison

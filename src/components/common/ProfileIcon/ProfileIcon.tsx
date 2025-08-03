@@ -40,7 +40,7 @@ const ProfileIcon = memo((props: ProfileIconProps) => {
 
   return (
     <div
-      className={`flex relative items-center justify-center rounded-full flex-shrink-0 font-medium ${props.className}`}
+      className={`flex relative items-center cursor-pointer justify-center rounded-full flex-shrink-0 font-medium ${props.className}`}
       style={{
         height: props.imageSize + "px",
         width: props.imageSize + "px",

@@ -31,7 +31,7 @@ const Auth: React.FC = () => {
           3. else we have to get the cookie from the headers and manually set it for each request (response.headers.get("set-cookie"))
         */
       if (response.status == 200) {
-        navigate("/chat");
+        navigate("/chats");
       } else {
         console.error("Login failed:", responseJson);
       }
